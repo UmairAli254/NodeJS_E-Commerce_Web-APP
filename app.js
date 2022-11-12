@@ -5,6 +5,7 @@ const port = process.env.PORT || 3000;
 require("./model/connection");
 // const AMr = require("./model/admin");
 const PMr = require("./model/posts");
+const CMr = require("./model/categories");
 
 // Variables
 const static_path = __dirname + "/public";
@@ -65,8 +66,15 @@ app.get("/admin/posts", async (req, res) => {
     }
 });
 
-app.get("/admin/categories", (req, res) => {
-    res.render("admin/categories/categories");
+app.get("/admin/categories", async (req, res) => {
+    try {
+        const data = await CMr.find();
+        res.render("admin/categories/categories", {
+            data: data
+        });
+    } catch (err) {
+        res.status(501).end(err);
+    }
 });
 
 app.get("/admin/logout", (req, res) => {
@@ -107,7 +115,7 @@ app.post("/admin/posts/update/:id", async (req, res) => {
         console.log(err);
         res.status(500).send(err);
     }
-})
+});
 // Delete post
 app.get("/admin/posts/delete/:id", async (req, res) => {
     try {
@@ -117,7 +125,40 @@ app.get("/admin/posts/delete/:id", async (req, res) => {
         console.log(err);
         res.status(500).send(err);
     }
-})
+});
+
+
+// Categories Routes 
+app.post("/admin/categories/new/publish", async (req, res) => {
+    try {
+        const data = await new CMr(req.body);
+        await data.save();
+        res.redirect("//localhost:3000/admin/categories");
+    } catch (err) {
+        res.status(500).send(err);
+    }
+
+});
+// Edit Category
+app.get("/admin/categories/update/:id/:cat_name", async (req, res) => {
+    try {
+        await CMr.findByIdAndUpdate(req.params.id, { category_name: req.params.cat_name });
+        res.redirect("//localhost:3000/admin/categories");
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+app.get("/admin/categories/delete/:id", async (req, res) => {
+    try {
+        await CMr.findByIdAndDelete(req.params.id);
+        res.redirect("//localhost:3000/admin/categories");
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
 
 
 // Admin Post Routes

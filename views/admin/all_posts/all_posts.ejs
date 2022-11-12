@@ -3,7 +3,7 @@
     <div class="col mt-5">
         <div class="row">
             <div class="col-2 ms-auto">
-                <a href="posts/new" class="btn btn-dark">New Post</a>
+                <a href="posts/new" style="background-color: #956366" class="btn text-light">New Post</a>
             </div>
 
         </div>
@@ -12,7 +12,7 @@
             <div class="col-6">
                 <ul class="list-group">
                     <li
-                        class="list-group-item list-group-item-secondary d-flex justify-content-between bg-dark text-light">
+                        class="list-group-item d-flex justify-content-between text-light" style="background-color: #322F46">
                         All Posts <span>
                             <%= data.length %>
                         </span>
@@ -23,8 +23,7 @@
                             <%= one.title %>
                                 <span>
                                     <span role="button">
-                                        <a href="//localhost:3000/admin/posts/edit/<%= one._id %>"
-                                            class="text-decoration-none" id="<%=one._id %>">Edit</a>
+                                        <a href="//localhost:3000/admin/posts/edit/<%= one._id %>" style="color: #956366" class="text-decoration-none" id="<%=one._id %>">Edit</a>
                                     </span>
                                     <span class="ms-3 text-danger delButton" role="button" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal" id="<%=one._id %>">Delete</span>

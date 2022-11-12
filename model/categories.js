@@ -3,11 +3,7 @@ const mongoose = require("mongoose");
 
 
 const Sr = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
+    category_name: {
         type: String,
         required: true
     },
@@ -19,6 +15,6 @@ const Sr = new mongoose.Schema({
 });
 
 
-const Mr = new mongoose.model("pages", Sr);
+const Mr = new mongoose.model("categories", Sr);
 
 module.exports = Mr;

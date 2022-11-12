@@ -1,10 +1,36 @@
 .gradient-custom {
     /* fallback for old browsers */
     background: #C17A74;
-    
+
     /* Chrome 10-25, Safari 5.1-6 */
     background: -webkit-linear-gradient(to right, #C17A74, rgb(7, 25, 56));
-    
+
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     background: linear-gradient(to right, #C17A74, rgb(7, 25, 56))
-    }
+}
+
+.nav-link {
+    color: black
+}
+
+.nav-link:hover {
+    background-color: #956366 !important;
+    color: white !important;
+}
+
+.nav-link.active {
+    background-color: #956366 !important;
+    color: white !important;
+}
+
+.active {
+    background-color: #956366 !important;
+    color: white !important;
+}
+
+button {
+    background-color: #956366 !important;
+    color: white !important;
+    border: none !important;
+    outline: none !important
+}
