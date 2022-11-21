@@ -11,9 +11,10 @@ const Sr = new mongoose.Schema({
         type: String,
         // required: true
     },
-    all_imgs: { 
+    all_imgs: {
         type: [String],
         // required: true
+        // defualt: null
     }
 });
 

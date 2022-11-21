@@ -1,24 +1,58 @@
 <%- include("../common/header", { title: "Products" }) %>
 
 	<div class="col mt-5">
-		<!-- First Row -->
+
+		<!-- Frist Row -->
 		<div class="row">
-			<div class="col-2 ms-auto">
-				<a href="products/new" style="background-color: #956366" class="btn text-light" data-bs-toggle="modal"
-					data-bs-target="#newproductModal">New Product</a>
-			</div>
-		</div>
-		<!-- Second Row -->
-		<div class="row mt-5">
-			<div class="col-7">
+			<div class="col-10">
 				<ul class="list-group">
 					<li class="list-group-item d-flex justify-content-between text-light"
 						style="background-color: #322F46">
 						All Products <span>
-							<!-- data.length -->
+							<%= data.length %>
 						</span>
 					</li>
 				</ul>
+
+				<!-- Productd Table -->
+				<table class="table table-striped bg-light">
+					<thead class="sticky-top bg-light shadow-sm" style="margin-bottom: 1rem">
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Title</th>
+							<th scope="col">Category</th>
+							<th scope="col">Price</th>
+							<th scope="col">Selling Price</th>
+							<th scope="col">Image</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% for(let i=0; i<data.length; i++){ %>
+							<tr>
+								<th scope="row">
+									<%= i+1 %>
+								</th>
+								<td><%= data[i].title %></td>
+								<td><%= data[i].category %></td>
+								<td><del><%= data[i].price %></del></td>
+								<td><%= data[i].s_price %></td>
+								<td> <img src="/img/product_imgs/<%= data[i].primary_img %>" style="width: 60px"
+										alt=""> </td>
+								<td> <span>
+										<span role="button" class="editBtn" data-bs-toggle="modal"
+											data-bs-target="#editProductModal" id="<%= data[i]._id %>" style="color:#956366">
+											Edit
+										</span>
+										<span class="ms-3 text-danger delButton" role="button" data-bs-toggle="modal"
+											data-bs-target="#exampleModal" id="<%= data[i]._id %>">Delete</span>
+									</span></td>
+							</tr>
+							<% } %>
+					</tbody>
+				</table>
+
+
 
 
 
@@ -32,17 +66,18 @@
 								<h5 class="m-auto modal-title" id="modalLabel">Add New Product</h5>
 							</div>
 							<div class="modal-body">
-								<form action="//localhost:3000/admin/products/new" method="post" enctype="multipart/form-data">
+								<form action="//localhost:3000/admin/products/new" method="post"
+									enctype="multipart/form-data">
 									<!-- First Row -->
 									<div class="row mb-3">
 										<div class="col-9">
 											<label class="form-label">Product Title</label>
 											<input type="text" class="form-control" id="product_title"
-												placeholder="write here..." name="title">
+												placeholder="write here..." name="title" required>
 										</div>
 										<div class="col">
 											<label class="form-label">Category</label>
-											<select class="form-select" id="product_category" name="category">
+											<select class="form-select" id="product_category" name="category" required>
 												<option>One</option>
 												<option>Two</option>
 												<option>Three</option>
@@ -55,7 +90,7 @@
 										<div class="form-group">
 											<label class="form-label">Description</label>
 											<textarea class="form-control" rows="3" name="description"
-												id="description"></textarea>
+												id="description" required></textarea>
 										</div>
 									</div>
 									<!-- Third Row -->
@@ -64,14 +99,14 @@
 											<div class="form-group">
 												<label class="form-label">Price</label>
 												<input type="number" class="form-control" id="product_price"
-													name="price" />
+													name="price" required />
 											</div>
 										</div>
 										<div class="col-6">
 											<div class="form-group">
 												<label class="form-label">Selling Price</label>
 												<input type="number" class="form-control" id="product_selling_price"
-													name="s_price" />
+													name="s_price" required/>
 											</div>
 										</div>
 									</div>
@@ -80,7 +115,8 @@
 										<div class="custom-file">
 											<label class="custom-file-label" for="customFile" id="productImage">Product
 												Main Image: &nbsp;&nbsp;&nbsp;</label>
-											<input type="file" class="custom-file-input" id="product_main_image" name="primary_img" />
+											<input type="file" class="custom-file-input" id="product_main_image"
+												name="primary_img" required/>
 										</div>
 									</div>
 									<!-- Fifth Row -->
@@ -111,7 +147,7 @@
 				<!-- End Modal for new product -->
 
 				<!-- Modal for edit product -->
-				<!-- <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="modalLabel"
+				<!-- <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="modalLabel"
 					aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content">
@@ -155,7 +191,57 @@
 				<!-- End of all Bootstrap Modals-->
 
 			</div>
+
+			<!-- Add New Product Button Row -->
+			<div class="col-2">
+				<a href="products/new" style="background-color: #956366" class="btn text-light sticky-top"
+					data-bs-toggle="modal" data-bs-target="#newproductModal">New Product</a>
+			</div>
 		</div>
+
+
+
+		<script>
+			// For delete button 
+			let a = document.querySelectorAll(".delButton");
+			let delConfirm = document.getElementById("delConfirm");
+			let del_modal_body = document.querySelector(".del-modal-body");
+
+			a.forEach((ele, ind) => {
+							ele.addEventListener("click", (e) => {
+											let id = e.target.id;
+											let id_element_to_find_title = document.getElementById(id);
+											delConfirm.href = `//localhost:3000/admin/products/delete/${id}`;
+											del_modal_body.innerText = id_element_to_find_title.parentNode.parentNode.parentNode.firstElementChild.nextElementSibling.innerText;
+							});
+
+			});
+
+			// For Edit Button
+			let editBtn = document.querySelectorAll(".editBtn");
+			let updateConfirm = document.getElementById("updateConfirm");
+			let eidtCategoryInput = document.getElementById("eidtCategoryInput");
+
+			editBtn.forEach((ele, ind) => {
+							ele.addEventListener("click", (e) => {
+											let id = e.target.id;
+											let id_element = document.getElementById(id);
+
+											eidtCategoryInput.value = id_element.parentNode.previousSibling.nodeValue.trim();
+
+											updateConfirm.href = `//localhost:3000/admin/categories/update/${id}`;
+							});
+
+			});
+
+			updateConfirm.addEventListener("click", function (e) {
+							let newVal = eidtCategoryInput.value;
+							let url = `${updateConfirm.href}/${newVal}`;
+							updateConfirm.href = url;
+			});
+
+</script>
+
 
 	</div> <!-- Col End Here-->
 	</div> <!-- Row End Here-->

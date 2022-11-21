@@ -166,8 +166,13 @@ app.get("/admin/categories/delete/:id", async (req, res) => {
 });
 
 // Admin Product Pages
-app.get("/admin/products", (req, res) => {
-    res.render("admin/products/products");
+app.get("/admin/products", async (req, res) => {
+    const data = await prod_Mr.find();
+    console.log(data);
+
+    res.render("admin/products/products", {
+        data: data
+    });
 });
 
 // Multer 
@@ -187,8 +192,9 @@ app.post("/admin/products/new", multipleUpload, async (req, res) => {
     try {
 
         // req.files will return an array that will contain two objects, 1st will be of the first file field and 2nd one will be second file field of the form and then we have to get the values from that object of arrays
+        const all_imgs_by_user = req.files.all_imgs || [];
         const gallery = new Array();
-        req.files.all_imgs.forEach((ele, ind) => {
+        all_imgs_by_user.forEach((ele, ind) => {
             gallery[ind] = req.files.all_imgs[ind].filename;
         });
 
@@ -210,13 +216,21 @@ app.post("/admin/products/new", multipleUpload, async (req, res) => {
         // console.log("Single: " + req.files.primary_img[0].filename);
         // console.log("Multiple: " + gallery);
         // res.status(201).send(ret);
-
+        res.redirect("http://localhost:3000/admin/products/");
     } catch (err) {
         res.status(500).send(err);
     }
+});
 
 
-
+// Delete Product
+app.get("/admin/products/delete/:id", async (req, res) => {
+    try {
+        await prod_Mr.findByIdAndDelete(req.params.id);
+        res.redirect("http://localhost:3000/admin/products/");
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
 
