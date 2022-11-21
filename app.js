@@ -6,6 +6,10 @@ require("./model/connection");
 // const AMr = require("./model/admin");
 const PMr = require("./model/posts");
 const CMr = require("./model/categories");
+const prod_Mr = require("./model/products");
+const multer = require("multer");
+const path = require("path");
+// const bodyParser = require("body-parser");
 
 // Variables
 const static_path = __dirname + "/public";
@@ -16,7 +20,7 @@ app.use(express.static(static_path));
 app.use(express.json());
 app.use(express.urlencoded({
     extended: false
-}))
+}));
 
 
 
@@ -76,6 +80,7 @@ app.get("/admin/categories", async (req, res) => {
         res.status(501).end(err);
     }
 });
+
 
 app.get("/admin/logout", (req, res) => {
     res.render("logout");
@@ -149,7 +154,7 @@ app.get("/admin/categories/update/:id/:cat_name", async (req, res) => {
         res.status(500).send(err);
     }
 });
-
+// Delete Category
 app.get("/admin/categories/delete/:id", async (req, res) => {
     try {
         await CMr.findByIdAndDelete(req.params.id);
@@ -159,6 +164,68 @@ app.get("/admin/categories/delete/:id", async (req, res) => {
         res.status(500).send(err);
     }
 });
+
+// Admin Product Pages
+app.get("/admin/products", (req, res) => {
+    res.render("admin/products/products");
+});
+
+// Multer 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/img/product_imgs");
+    },
+    filename: function (req, file, cb) {
+        cb(null, path.parse(file.originalname).name + "-" + Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
+const multipleUpload = upload.fields([{ name: "primary_img", maxCount: 1 }, { name: "all_imgs" }]);
+
+
+app.post("/admin/products/new", multipleUpload, async (req, res) => {
+    try {
+
+        // req.files will return an array that will contain two objects, 1st will be of the first file field and 2nd one will be second file field of the form and then we have to get the values from that object of arrays
+        const gallery = new Array();
+        req.files.all_imgs.forEach((ele, ind) => {
+            gallery[ind] = req.files.all_imgs[ind].filename;
+        });
+
+        const data = await prod_Mr({
+            title: req.body.title,
+            category: req.body.category,
+            description: req.body.description,
+            price: req.body.price,
+            s_price: req.body.s_price,
+            primary_img: req.files.primary_img[0].filename,
+            all_imgs: gallery
+        });
+
+        const ret = await data.save();
+        // console.log(ret);
+        // console.log(req.files);
+        // console.log(req.fields);
+        // console.log(req.file);
+        // console.log("Single: " + req.files.primary_img[0].filename);
+        // console.log("Multiple: " + gallery);
+        // res.status(201).send(ret);
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+
+
+
+});
+
+
+
+
+
+
+
+
 
 
 // Admin Post Routes

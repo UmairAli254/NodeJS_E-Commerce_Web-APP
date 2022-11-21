@@ -1,0 +1,177 @@
+<%- include("../common/header", { title: "Products" }) %>
+
+	<div class="col mt-5">
+		<!-- First Row -->
+		<div class="row">
+			<div class="col-2 ms-auto">
+				<a href="products/new" style="background-color: #956366" class="btn text-light" data-bs-toggle="modal"
+					data-bs-target="#newproductModal">New Product</a>
+			</div>
+		</div>
+		<!-- Second Row -->
+		<div class="row mt-5">
+			<div class="col-7">
+				<ul class="list-group">
+					<li class="list-group-item d-flex justify-content-between text-light"
+						style="background-color: #322F46">
+						All Products <span>
+							<!-- data.length -->
+						</span>
+					</li>
+				</ul>
+
+
+
+				<!-- Bootstrap Modals-->
+				<!-- Modal for new product -->
+				<div class="modal fade in modal-lg" id="newproductModal" tabindex="-1" aria-labelledby="modalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="m-auto modal-title" id="modalLabel">Add New Product</h5>
+							</div>
+							<div class="modal-body">
+								<form action="//localhost:3000/admin/products/new" method="post" enctype="multipart/form-data">
+									<!-- First Row -->
+									<div class="row mb-3">
+										<div class="col-9">
+											<label class="form-label">Product Title</label>
+											<input type="text" class="form-control" id="product_title"
+												placeholder="write here..." name="title">
+										</div>
+										<div class="col">
+											<label class="form-label">Category</label>
+											<select class="form-select" id="product_category" name="category">
+												<option>One</option>
+												<option>Two</option>
+												<option>Three</option>
+												<option>Four</option>
+											</select>
+										</div>
+									</div>
+									<!-- Second Row -->
+									<div class="row mb-3">
+										<div class="form-group">
+											<label class="form-label">Description</label>
+											<textarea class="form-control" rows="3" name="description"
+												id="description"></textarea>
+										</div>
+									</div>
+									<!-- Third Row -->
+									<div class="row mb-3">
+										<div class="col-6">
+											<div class="form-group">
+												<label class="form-label">Price</label>
+												<input type="number" class="form-control" id="product_price"
+													name="price" />
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="form-group">
+												<label class="form-label">Selling Price</label>
+												<input type="number" class="form-control" id="product_selling_price"
+													name="s_price" />
+											</div>
+										</div>
+									</div>
+									<!-- Forth Row -->
+									<div class="row mt-5">
+										<div class="custom-file">
+											<label class="custom-file-label" for="customFile" id="productImage">Product
+												Main Image: &nbsp;&nbsp;&nbsp;</label>
+											<input type="file" class="custom-file-input" id="product_main_image" name="primary_img" />
+										</div>
+									</div>
+									<!-- Fifth Row -->
+									<div class="row mt-5">
+										<div class="custom-file">
+											<label for='files'>Select All Other Images: </label>
+											<input type='file' id='product_all_images' name="all_imgs" multiple />
+
+
+											<output id='result' />
+
+
+										</div>
+									</div>
+
+
+									<!-- modal footer -->
+									<div class="modal-footer border-0">
+										<button type="submit" class="btn btn-dark" id="product_publish_btn"> Publish
+										</button>
+									</div>
+								</form>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<!-- End Modal for new product -->
+
+				<!-- Modal for edit product -->
+				<!-- <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="modalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="m-auto update-modal-title" id="modalLabel">Update product</h5>
+							</div>
+							<div class="update-modal-body">
+								<div class="mb-3 p-3">
+									<label for="eidtproductInput" class="form-label">Product Title</label>
+									<input type="text" class="form-control" id="eidtproductInput"
+										placeholder="write here..." name="name">
+								</div>
+								<div class="modal-footer border-0">
+									<button type="button" class="btn btn-secondary"
+										data-bs-dismiss="modal">Close</button>
+									<a href="#" class="btn btn-dark" id="updateConfirm">Update</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div> -->
+				<!-- End Modal for edit product -->
+
+				<!-- Modal for Delete -->
+				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="m-auto modal-title" id="modalLabel">Are you sure, you want to delete this
+									product?</h5>
+							</div>
+							<div class="modal-body del-modal-body">...</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								<a href="#" id="delConfirm" class="btn btn-danger">Delete</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /End Bootstrap Delete Modal -->
+				<!-- End of all Bootstrap Modals-->
+
+			</div>
+		</div>
+
+	</div> <!-- Col End Here-->
+	</div> <!-- Row End Here-->
+	</div> <!-- Container End Here-->
+
+
+
+
+
+
+	<!-- JavaScript Bundle with Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+		crossorigin="anonymous"></script>
+	<script src="/admin/products/product.js"></script>
+
+	</body>
+
+	</html>
