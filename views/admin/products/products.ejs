@@ -40,7 +40,7 @@
 								<td> <img src="/img/product_imgs/<%= data[i].primary_img %>" style="width: 60px"
 										alt=""> </td>
 								<td> <span>
-										<span role="button" class="editBtn" data-bs-toggle="modal"
+										<span role="button" class="product_edit_btn" data-bs-toggle="modal"
 											data-bs-target="#editProductModal" id="<%= data[i]._id %>" style="color:#956366">
 											Edit
 										</span>
@@ -67,7 +67,7 @@
 							</div>
 							<div class="modal-body">
 								<form action="//localhost:3000/admin/products/new" method="post"
-									enctype="multipart/form-data">
+									enctype="multipart/form-data" id="new_product_form">
 									<!-- First Row -->
 									<div class="row mb-3">
 										<div class="col-9">
@@ -77,11 +77,11 @@
 										</div>
 										<div class="col">
 											<label class="form-label">Category</label>
-											<select class="form-select" id="product_category" name="category" required>
-												<option>One</option>
-												<option>Two</option>
-												<option>Three</option>
-												<option>Four</option>
+											<select class="form-select" id="update_category" name="category" required>
+												<option disabled selected>choose</option>
+												<% for(let one of categories){ %>
+													<option><%= one.category_name %></option>
+													<% } %>
 											</select>
 										</div>
 									</div>
@@ -146,30 +146,94 @@
 				</div>
 				<!-- End Modal for new product -->
 
+
 				<!-- Modal for edit product -->
-				<!-- <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="modalLabel"
-					aria-hidden="true">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="m-auto update-modal-title" id="modalLabel">Update product</h5>
-							</div>
-							<div class="update-modal-body">
-								<div class="mb-3 p-3">
-									<label for="eidtproductInput" class="form-label">Product Title</label>
-									<input type="text" class="form-control" id="eidtproductInput"
-										placeholder="write here..." name="name">
-								</div>
-								<div class="modal-footer border-0">
-									<button type="button" class="btn btn-secondary"
-										data-bs-dismiss="modal">Close</button>
-									<a href="#" class="btn btn-dark" id="updateConfirm">Update</a>
-								</div>
-							</div>
+				<div class="modal fade in modal-lg" id="editProductModal" tabindex="-1" aria-labelledby="modalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="m-auto modal-title" id="modalLabel">Edit Product</h5>
 						</div>
+						<div class="modal-body">
+							<form action="//localhost:3000/admin/products/new" method="post"
+								enctype="multipart/form-data" id="update_product_form">
+								<!-- First Row -->
+								<div class="row mb-3">
+									<div class="col-9">
+										<label class="form-label">Product Title</label>
+										<input type="text" class="form-control" id="update_title"
+											placeholder="write here..." name="title" required>
+									</div>
+									<div class="col">
+										<label class="form-label">Category</label>
+										<select class="form-select" id="update_category" name="category" required>
+											<% for(let one of categories){ %>
+												<option value="<%= one.category_name %>"><%= one.category_name %></option>
+												<% } %>
+										</select>
+									</div>
+								</div>
+								<!-- Second Row -->
+								<div class="row mb-3">
+									<div class="form-group">
+										<label class="form-label">Description</label>
+										<textarea class="form-control" rows="3" name="description"
+											id="update_description" required></textarea>
+									</div>
+								</div>
+								<!-- Third Row -->
+								<div class="row mb-3">
+									<div class="col-6">
+										<div class="form-group">
+											<label class="form-label">Price</label>
+											<input type="number" class="form-control" id="update_price"
+												name="price" required />
+										</div>
+									</div>
+									<div class="col-6">
+										<div class="form-group">
+											<label class="form-label">Selling Price</label>
+											<input type="number" class="form-control" id="update_s_price"
+												name="s_price" required/>
+										</div>
+									</div>
+								</div>
+								<!-- Forth Row -->
+								<div class="row mt-5">
+									<div class="custom-file">
+										<label class="custom-file-label" for="customFile" id="productImage">Product
+											Main Image: &nbsp;&nbsp;&nbsp;</label>
+										<input type="file" class="custom-file-input" id="update_primary_img"
+											name="primary_img" />
+									</div>
+								</div>
+								<!-- Fifth Row -->
+								<div class="row mt-5">
+									<div class="custom-file">
+										<label for='files'>All Other Images: </label>
+										<input type='file' id='update_all_imgs' name="all_imgs" multiple />
+
+
+										<output id='result' />
+
+
+									</div>
+								</div>
+								<!-- modal footer -->
+								<div class="modal-footer border-0">
+									<button type="submit" class="btn btn-dark" id="product_update_btn"> Update
+									</button>
+								</div>
+							</form>
+						</div>
+
 					</div>
-				</div> -->
+				</div>
+			</div>
 				<!-- End Modal for edit product -->
+
+
 
 				<!-- Modal for Delete -->
 				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
@@ -199,48 +263,6 @@
 			</div>
 		</div>
 
-
-
-		<script>
-			// For delete button 
-			let a = document.querySelectorAll(".delButton");
-			let delConfirm = document.getElementById("delConfirm");
-			let del_modal_body = document.querySelector(".del-modal-body");
-
-			a.forEach((ele, ind) => {
-							ele.addEventListener("click", (e) => {
-											let id = e.target.id;
-											let id_element_to_find_title = document.getElementById(id);
-											delConfirm.href = `//localhost:3000/admin/products/delete/${id}`;
-											del_modal_body.innerText = id_element_to_find_title.parentNode.parentNode.parentNode.firstElementChild.nextElementSibling.innerText;
-							});
-
-			});
-
-			// For Edit Button
-			let editBtn = document.querySelectorAll(".editBtn");
-			let updateConfirm = document.getElementById("updateConfirm");
-			let eidtCategoryInput = document.getElementById("eidtCategoryInput");
-
-			editBtn.forEach((ele, ind) => {
-							ele.addEventListener("click", (e) => {
-											let id = e.target.id;
-											let id_element = document.getElementById(id);
-
-											eidtCategoryInput.value = id_element.parentNode.previousSibling.nodeValue.trim();
-
-											updateConfirm.href = `//localhost:3000/admin/categories/update/${id}`;
-							});
-
-			});
-
-			updateConfirm.addEventListener("click", function (e) {
-							let newVal = eidtCategoryInput.value;
-							let url = `${updateConfirm.href}/${newVal}`;
-							updateConfirm.href = url;
-			});
-
-</script>
 
 
 	</div> <!-- Col End Here-->

@@ -168,10 +168,11 @@ app.get("/admin/categories/delete/:id", async (req, res) => {
 // Admin Product Pages
 app.get("/admin/products", async (req, res) => {
     const data = await prod_Mr.find();
-    console.log(data);
+    const categories = await CMr.find({}, {category_name: true, _id: 0});
 
     res.render("admin/products/products", {
-        data: data
+        data: data,
+        categories: categories
     });
 });
 
@@ -207,17 +208,83 @@ app.post("/admin/products/new", multipleUpload, async (req, res) => {
             primary_img: req.files.primary_img[0].filename,
             all_imgs: gallery
         });
+        await data.save();
 
-        const ret = await data.save();
-        // console.log(ret);
-        // console.log(req.files);
-        // console.log(req.fields);
-        // console.log(req.file);
-        // console.log("Single: " + req.files.primary_img[0].filename);
-        // console.log("Multiple: " + gallery);
-        // res.status(201).send(ret);
         res.redirect("http://localhost:3000/admin/products/");
     } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+
+// API Get Product Details
+app.get("/admin/products/data-for-update/:id", async (req, res) => {
+    try {
+        const data = await prod_Mr.findOne({ _id: req.params.id });
+        res.status(200).send(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+// Update Product after hitting the Form Update Button
+app.post("/admin/product/update/:id", multipleUpload, async (req, res) => {
+    try {
+        const all_imgs_by_user = req.files.all_imgs || [];
+        const gallery = new Array();
+        all_imgs_by_user.forEach((ele, ind) => {
+            gallery[ind] = req.files.all_imgs[ind].filename;
+        });
+
+        let primary_image
+        try {
+            primary_image = req.files.primary_img[0].filename;
+        } catch {
+            primary_image = "";
+        }
+
+        if (primary_image === "" && gallery.length !== 0) {
+            await prod_Mr.findByIdAndUpdate(req.params.id, {
+                title: req.body.title,
+                category: req.body.category,
+                description: req.body.description,
+                price: req.body.price,
+                s_price: req.body.s_price,
+                all_imgs: gallery
+            });
+        } else if (primary_image !== "" && gallery.length === 0) {
+            await prod_Mr.findByIdAndUpdate(req.params.id, {
+                title: req.body.title,
+                category: req.body.category,
+                description: req.body.description,
+                price: req.body.price,
+                s_price: req.body.s_price,
+                primary_img: primary_image,
+            });
+        } else if (primary_image === "" && gallery.length === 0) {
+            await prod_Mr.findByIdAndUpdate(req.params.id, {
+                title: req.body.title,
+                category: req.body.category,
+                description: req.body.description,
+                price: req.body.price,
+                s_price: req.body.s_price,
+            });
+        } else {
+            await prod_Mr.findByIdAndUpdate(req.params.id, {
+                title: req.body.title,
+                category: req.body.category,
+                description: req.body.description,
+                price: req.body.price,
+                s_price: req.body.s_price,
+                primary_img: primary_image,
+                all_imgs: gallery
+
+            });
+        }
+
+        res.redirect("http://localhost:3000/admin/products/");
+
+    } catch (err) {
+        console.log(err);
         res.status(500).send(err);
     }
 });
@@ -254,6 +321,18 @@ app.get("/admin/products/delete/:id", async (req, res) => {
 //     }
 // });
 
+
+
+
+// Extra APIs than default routers
+app.get("/admin/all-categories", async (req, res) => {
+    try {
+        const data = await CMr.find({}, {category_name: true, _id: 0});
+        res.status(200).send(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+})
 
 
 

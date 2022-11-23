@@ -31,30 +31,69 @@ window.onload = function () {
 }
 
 
-// APIs
-// const new_product_form = document.getElementById("new_product_form");
-// const product_title = document.getElementById("product_title");
-// const product_category = document.getElementById("product_category");
-// const product_description = document.getElementById("product_description");
-// const product_price = document.getElementById("product_price");
-// const product_selling_price = document.getElementById("product_selling_price");
-// const product_main_image = document.getElementById("product_main_image");
-// const product_all_images = document.getElementById("product_all_images");
-// const product_publish_btn = document.getElementsByClassName("product_publish_btn");
+// For Update Product Form / Modal
+const new_product_form = document.getElementById("update_product_form");
+const update_title = document.getElementById("update_title");
+const update_category = document.getElementById("update_category");
+const update_description = document.getElementById("update_description");
+const update_price = document.getElementById("update_price");
+const update_s_price = document.getElementById("update_s_price");
+const update_primary_img = document.getElementById("update_primary_img");
+const update_all_imgs = document.getElementById("update_all_imgs");
+const product_edit_btn = document.querySelectorAll(".product_edit_btn");
+
+product_edit_btn.forEach((ele, ind) => {
+    ele.addEventListener("click", (e) => {
+        // Variables
+        const product_id = e.target.id;
+        const url = `http://localhost:3000/admin/products/data-for-update/${product_id}`;
+
+        // Calling API
+        fetch(url)
+            .then(data => data.json())
+            .then(value => {
+                update_title.value = value.title;
+                update_category.value = value.category;
+                update_description.value = value.description;
+                update_price.value = value.price;
+                update_s_price.value = value.s_price;
+                update_primary_img.value = value.primary_img
+                update_all_images.value = value.all_imgs
+            })
+            .catch(err => console.log(err));
+    })
+})
 
 
-// new_product_form.addEventListener("submit", (e) => {
-//     e.preventDefault();
-//     console.log(product_title.value);
-//     console.log(product_category.value);
-//     console.log(product_description.value);
-//     console.log(product_price.value);
-//     console.log(product_selling_price.value);
-//     console.log(product_main_image.value);
-//     const all_img = product_all_images.value;
-//     let arr;
+// After clicking the edit button form.action url will be changed with the required ID of product
+let editBtn = document.querySelectorAll(".product_edit_btn");
+let update_product_form = document.getElementById("update_product_form");
 
-  
-// })
+editBtn.forEach((ele, ind) => {
+    ele.addEventListener("click", (e) => {
+        let id = e.target.id;
+
+        update_product_form.action = `//localhost:3000/admin/product/update/${id}`;
+    });
+
+});
+
+
+
+
+// For delete button 
+let a = document.querySelectorAll(".delButton");
+let delConfirmInModal = document.getElementById("delConfirm");
+let del_modal_body = document.querySelector(".del-modal-body");
+
+a.forEach((ele, ind) => {
+    ele.addEventListener("click", (e) => {
+        let id = e.target.id;
+        let id_element_to_find_title = document.getElementById(id);
+        delConfirmInModal.href = `//localhost:3000/admin/products/delete/${id}`;
+        del_modal_body.innerText = id_element_to_find_title.parentNode.parentNode.parentNode.firstElementChild.nextElementSibling.innerText;
+    });
+
+});
 
 
