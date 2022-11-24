@@ -22,31 +22,82 @@ app.use(express.urlencoded({
     extended: false
 }));
 
-
+// Categories to show on home and Other pages' header 
 
 // Routing
-app.get("/", (req, res) => {
-    res.render("home");
+app.get("/", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+    const products = await prod_Mr.find().limit(8);
+
+    res.render("home", {
+        categories: all_categories,
+        products: products
+    });
 });
 
-app.get("/shop", (req, res) => {
-    res.render("shop");
+app.get("/shop", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+    const products = await prod_Mr.find();
+
+    let obj = {
+        categories: all_categories,
+        products
+    };
+
+    res.render("shop", obj);
 })
 
-app.get("/detail", (req, res) => {
-    res.render("detail");
+// Single Product
+app.get("/product/:name/:id", async (req, res) => {
+
+    const all_categories = await CMr.find({}, { category_name: true });
+    const product = await prod_Mr.findOne({ _id: req.params.id });
+    const same_cat_pro = await prod_Mr.find({ category: product.category });
+
+
+    res.render("single-product", {
+        categories: all_categories,
+        product,
+        same_cat_pro
+    });
+});
+
+// Each Category Products
+app.get("/category/:name/:id", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+    const data = await prod_Mr.find({ category: req.params.name });
+
+    res.render("single-category", {
+        categories: all_categories,
+        data,
+        cat_name: req.params.name
+    });
 })
 
-app.get("/contact", (req, res) => {
-    res.render("contact");
+
+
+app.get("/contact", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+
+    res.render("contact", {
+        categories: all_categories
+    });
 })
 
-app.get("/checkout", (req, res) => {
-    res.render("checkout");
+app.get("/checkout", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+
+    res.render("checkout", {
+        categories: all_categories
+    });
 })
 
-app.get("/cart", (req, res) => {
-    res.render("cart");
+app.get("/cart", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+
+    res.render("cart", {
+        categories: all_categories
+    });
 })
 
 // Admin Routes
@@ -168,7 +219,7 @@ app.get("/admin/categories/delete/:id", async (req, res) => {
 // Admin Product Pages
 app.get("/admin/products", async (req, res) => {
     const data = await prod_Mr.find();
-    const categories = await CMr.find({}, {category_name: true, _id: 0});
+    const categories = await CMr.find({}, { category_name: true, _id: 0 });
 
     res.render("admin/products/products", {
         data: data,
@@ -327,7 +378,7 @@ app.get("/admin/products/delete/:id", async (req, res) => {
 // Extra APIs than default routers
 app.get("/admin/all-categories", async (req, res) => {
     try {
-        const data = await CMr.find({}, {category_name: true, _id: 0});
+        const data = await CMr.find({}, { category_name: true, _id: 0 });
         res.status(200).send(data);
     } catch (err) {
         res.status(500).send(err);
