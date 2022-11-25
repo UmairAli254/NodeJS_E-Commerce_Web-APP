@@ -1,0 +1,53 @@
+<%- include("./partials/header", { title: "Blog" }) %>
+
+ <div class="container mt-5 pt-5">
+  <div class="row d-flex justify-content-center">
+
+   <% for(let one of posts ){ %>
+    <div class="col-md-5 mr-5">
+     <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col p-4 d-flex flex-column position-static">
+       <strong class="d-inline-block mb-2 text-success">Umair</strong>
+       <h3 class="mb-0">
+        <%= one.title %>
+       </h3>
+       <div class="mb-1 text-muted">
+        <%= one.date.toLocaleDateString() %>
+       </div>
+       <p class="mb-auto paraLimit">
+        <%= one.description %>
+       </p>
+       <a href="#" class="mt-2 continueReading" data-toggle="modal" data-target="#exampleModalLong" id="<%= one._id %>">Continue reading</a>
+      </div>
+     </div>
+    </div>
+
+    <% } %>
+
+  </div>
+ </div>
+
+
+ <!-- Single Post Modal -->
+ <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+  aria-hidden="true" data-controls-modal="your_div_id" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+   <div class="modal-content rounded">
+    <div class="modal-header">
+     <h5 class="modal-title m-auto" id="exampleModalLongTitle"></h5>
+    
+    </div>
+    <div class="modal-body">
+     ...
+    </div>
+    <div class="modal-footer d-flex justify-content-between">
+     <span id="uploaded-date"></span>
+     <span class="text-success" id="author"> -Umair </span>
+     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    </div>
+   </div>
+  </div>
+ </div>
+
+
+ <%- include("./partials/footer") %>

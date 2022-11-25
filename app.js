@@ -58,9 +58,11 @@ app.get("/product/:name/:id", async (req, res) => {
     res.render("single-product", {
         categories: all_categories,
         product,
-        same_cat_pro
+        same_cat_pro,
+        cat_name: req.params.name
     });
 });
+
 
 // Each Category Products
 app.get("/category/:name/:id", async (req, res) => {
@@ -72,7 +74,29 @@ app.get("/category/:name/:id", async (req, res) => {
         data,
         cat_name: req.params.name
     });
-})
+});
+
+// Blog
+app.get("/blog", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+    const posts = await PMr.find();
+
+    res.render("blog", {
+        categories: all_categories,
+        posts
+    });
+});
+// Blog Post API
+app.get("/blog/:id", async (req, res) => {
+    try {
+        const post = await PMr.findOne({ _id: req.params.id });
+        console.log(post);
+        res.status(200).send(post);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
 
 
 

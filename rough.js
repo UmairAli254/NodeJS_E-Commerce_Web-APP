@@ -1,8 +1,7 @@
 "use strict";
-let arr = new Array();
 
-console.log(arr);
+let s = "Umair Ali Bhiai";
 
-// arr+="Umair";
-
-console.log(arr);
+console.log(s);
+s = s.split(" ");
+console.log(s)
