@@ -17,6 +17,9 @@ const Sr = new mongoose.Schema({
 				throw new Error("Invalid Email");
 		},
 		required: true,
+		index: {
+			unique: true
+		}
 	},
 	pass: {
 		type: String,
@@ -46,7 +49,14 @@ Sr.methods.singnUpToken = async function () {
 
 	const token = await jwt.sign(payload, process.env.SCRET_KEY);
 	this.tokens = this.tokens.concat({ token: token });
-	console.log(token);
+	// console.log(token);
+};
+
+Sr.methods.genLoginToken = async function () {
+	const payload = this.email;
+
+	const loginToken = await jwt.sign(payload, process.env.SCRET_KEY);
+	return loginToken;
 }
 
 const Mr = new mongoose.model("user_account", Sr);

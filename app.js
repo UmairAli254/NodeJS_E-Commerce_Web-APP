@@ -10,7 +10,11 @@ const prod_Mr = require("./model/products");
 const multer = require("multer");
 const path = require("path");
 const UMr = require("./model/user-signup");
-// const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+const noCache = require("nocache");
+
 
 // Variables
 const static_path = __dirname + "/public";
@@ -22,6 +26,8 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: false
 }));
+app.use(cookieParser());
+app.use(noCache());
 
 // Categories to show on home and Other pages' header 
 
@@ -146,6 +152,35 @@ app.get("/login", async (req, res) => {
         categories: all_categories
     });
 });
+
+app.post("/login", async (req, res) => {
+    try {
+        const email = req.body.email;
+        const pass = req.body.pass;
+        const data = await UMr.findOne({ email });
+        const isMatch = await bcrypt.compare(pass, data.pass);
+
+        if (isMatch) {
+            const loginToken = await data.genLoginToken();
+            res.cookie("token", loginToken);
+            // res.status(200).send(req.body);
+            res.redirect("http://localhost:3000/profile");
+        } else
+            res.status(500).send("Password is wrong");
+
+    } catch {
+        res.send("Email Not Found!");
+    }
+});
+
+// Profile Page
+app.get("/profile", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+
+    res.render("profile", {
+        categories: all_categories
+    });
+})
 
 // End User Account
 
