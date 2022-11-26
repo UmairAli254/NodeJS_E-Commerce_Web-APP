@@ -1,0 +1,25 @@
+<%- include("./partials/header", {title: "Register" }) %>
+
+
+ <div class="container mt-5 bg-light rounded shadow p-5" style="margin-top: 7rem !important; margin-bottom: 10rem">
+  <div class="row w-100 ml-auto">
+   <form action="register" method="POST" class="text-center m-auto py-4" style="width: 40%">
+
+    <div class="input-group mb-3">
+     <input type="text" class="form-control" placeholder="Your Email" name="email" />
+     <span class="input-group-text" id="basic-addon2">📧</span>
+    </div>
+
+    <div class="input-group mb-3">
+     <span class="input-group-text">🔑</span>
+     <input type="password" class="form-control" placeholder="Password" name="pass" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Login</button>
+   </form>
+
+  </div>
+ </div>
+
+
+ <%- include("./partials/footer") %>

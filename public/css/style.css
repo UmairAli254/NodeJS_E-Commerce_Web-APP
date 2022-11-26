@@ -6542,6 +6542,7 @@ a.close.disabled {
 }
 
 .carousel-control-prev {
+  z-index: 0;
   left: 0;
 }
 

@@ -9,6 +9,7 @@ const CMr = require("./model/categories");
 const prod_Mr = require("./model/products");
 const multer = require("multer");
 const path = require("path");
+const UMr = require("./model/user-signup");
 // const bodyParser = require("body-parser");
 
 // Variables
@@ -97,16 +98,56 @@ app.get("/blog/:id", async (req, res) => {
     }
 });
 
-
-
-
 app.get("/contact", async (req, res) => {
     const all_categories = await CMr.find({}, { category_name: true });
 
     res.render("contact", {
         categories: all_categories
     });
+});
+
+// User Account
+// Registeration
+app.get("/register", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+
+    res.render("register", {
+        categories: all_categories
+    });
+});
+app.post("/register", async (req, res) => {
+    try {
+        const pass = req.body.pass;
+        const c_pass = req.body.c_pass;
+
+        if (pass === c_pass) {
+            const data = await new UMr({
+                name: req.body.name,
+                email: req.body.email,
+                pass: pass
+            });
+            data.singnUpToken();
+            const ret = await data.save();
+            res.redirect("//localhost:3000/register");
+
+        } else {
+            res.send("Password in not same!");
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+
 })
+// Login
+app.get("/login", async (req, res) => {
+    const all_categories = await CMr.find({}, { category_name: true });
+
+    res.render("login", {
+        categories: all_categories
+    });
+});
+
+// End User Account
 
 app.get("/checkout", async (req, res) => {
     const all_categories = await CMr.find({}, { category_name: true });
@@ -122,7 +163,15 @@ app.get("/cart", async (req, res) => {
     res.render("cart", {
         categories: all_categories
     });
-})
+});
+
+
+
+
+
+
+
+
 
 // Admin Routes
 // Dashboard Routes
