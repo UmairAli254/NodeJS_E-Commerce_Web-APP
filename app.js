@@ -14,6 +14,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const noCache = require("nocache");
+const cart_pro_Mr = require("./model/cart");
+require("dotenv").config();
 
 
 // Variables
@@ -162,7 +164,7 @@ app.post("/login", async (req, res) => {
 
         if (isMatch) {
             const loginToken = await data.genLoginToken();
-            res.cookie("token", loginToken);
+            res.cookie("eShopperLoginToken", loginToken);
             // res.status(200).send(req.body);
             res.redirect("http://localhost:3000/profile");
         } else
@@ -175,12 +177,26 @@ app.post("/login", async (req, res) => {
 
 // Profile Page
 app.get("/profile", async (req, res) => {
-    const all_categories = await CMr.find({}, { category_name: true });
+    try {
+        const all_categories = await CMr.find({}, { category_name: true });
 
-    res.render("profile", {
-        categories: all_categories
-    });
-})
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+        if (isVerified) {
+            res.render("profile", {
+                categories: all_categories
+            });
+        } else
+            res.redirect("//localhost:3000/login");
+    } catch {
+        res.redirect("//localhost:3000/login");
+    }
+
+});
+
+app.get("/logout", (req, res) => {
+    res.clearCookie("eShopperLoginToken");
+    res.redirect("//localhost:3000/login");
+});
 
 // End User Account
 
@@ -192,14 +208,71 @@ app.get("/checkout", async (req, res) => {
     });
 })
 
+// Cart Page and Add to cart process below
+// Cart Page
 app.get("/cart", async (req, res) => {
-    const all_categories = await CMr.find({}, { category_name: true });
+    try {
+        const all_categories = await CMr.find({}, { category_name: true });
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
 
-    res.render("cart", {
-        categories: all_categories
-    });
+        const data = await cart_pro_Mr.find({ user_email: isVerified });
+
+        res.render("cart", {
+            categories: all_categories,
+            products: data
+        });
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+
 });
 
+// API to Get product by id when click on "Add To Cart"
+app.get("/get-product-for-cart/:id", async (req, res) => {
+    const data = await prod_Mr.findById(req.params.id);
+    res.send(data);
+})
+// API to Get Loggedin User's id when click on "Add To Cart"
+app.get("/get-loggedin-user-email", async (req, res) => {
+    try {
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            res.status(200).send(JSON.stringify(isVerified));
+        } else {
+            res.status(404).send("user is not loggedin");
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+// Store product to the database via API when user clicks on the add_to_cart button
+app.post("/store-cart-porduct-to-db", async (req, res) => {
+    try {
+        const data = await cart_pro_Mr(req.body);
+        console.log(data);
+        const ret = await data.save();
+        ret ? res.status(201).send(true) : res.status(500).send(false);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+// API to get cart products that are already added into db
+app.get("/get-cart-products", async (req, res) => {
+
+    try {
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+
+        const data = await cart_pro_Mr.find({ user_email: isVerified });
+        res.status(200).send(data);
+
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+
+})
 
 
 

@@ -78,6 +78,7 @@ body {
   outline: 0 !important;
 }
 
+
 hr {
   box-sizing: content-box;
   height: 0;
@@ -6542,7 +6543,6 @@ a.close.disabled {
 }
 
 .carousel-control-prev {
-  z-index: 0;
   left: 0;
 }
 

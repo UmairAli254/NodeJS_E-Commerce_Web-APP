@@ -79,13 +79,13 @@
 				</form>
 			</div>
 			<div class="col-lg-3 col-6 text-right">
-				<a href="" class="btn border">
+				<a href="/favourites" class="btn border">
 					<i class="fas fa-heart text-primary"></i>
 					<span class="badge">0</span>
 				</a>
-				<a href="" class="btn border">
+				<a href="/cart" class="btn border">
 					<i class="fas fa-shopping-cart text-primary"></i>
-					<span class="badge">0</span>
+					<span class="badge cart_badge">0</span>
 				</a>
 			</div>
 		</div>
@@ -217,8 +217,8 @@
 								<%= one.title %>
 							</h6>
 							<div class="d-flex justify-content-center">
-								<h6>$<%= one.price %>.00</< /h6>
-										<h6 class="text-muted ml-2"><del>$<%= one.s_price %>.00</< /del>
+								<h6>$<%= one.s_price %>.00</< /h6>
+										<h6 class="text-muted ml-2"><del>$<%= one.price %>.00</< /del>
 										</h6>
 							</div>
 						</div>
@@ -227,7 +227,7 @@
 								class="btn btn-sm text-dark p-0" id="<%= one._id %>"><i
 									class="fas fa-eye text-primary mr-1"></i>View
 								Detail</a>
-							<a href="" class="btn btn-sm text-dark p-0" id="<%= one._id %>"><i
+							<a class="btn btn-sm text-dark p-0 add_to_cart" id="<%= one._id %>"><i
 									class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
 						</div>
 					</div>

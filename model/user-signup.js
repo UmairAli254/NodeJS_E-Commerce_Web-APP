@@ -47,7 +47,7 @@ Sr.pre("save", async function () {
 Sr.methods.singnUpToken = async function () {
 	const payload = this._id.toString();
 
-	const token = await jwt.sign(payload, process.env.SCRET_KEY);
+	const token = jwt.sign(payload, process.env.SECRET_KEY);
 	this.tokens = this.tokens.concat({ token: token });
 	// console.log(token);
 };
@@ -55,7 +55,7 @@ Sr.methods.singnUpToken = async function () {
 Sr.methods.genLoginToken = async function () {
 	const payload = this.email;
 
-	const loginToken = await jwt.sign(payload, process.env.SCRET_KEY);
+	const loginToken = jwt.sign(payload, process.env.SECRET_KEY);
 	return loginToken;
 }
 
