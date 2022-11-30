@@ -2,21 +2,21 @@
 	"use strict";
 
 	// Dropdown on mouse hover
-	$(document).ready(function () {
-		function toggleNavbarMethod() {
-			if ($(window).width() > 992) {
-				$('.navbar .dropdown').on('mouseover', function () {
-					$('.dropdown-toggle', this).trigger('click');
-				}).on('mouseout', function () {
-					$('.dropdown-toggle', this).trigger('click').blur();
-				});
-			} else {
-				$('.navbar .dropdown').off('mouseover').off('mouseout');
-			}
-		}
-		toggleNavbarMethod();
-		$(window).resize(toggleNavbarMethod);
-	});
+	// $(document).ready(function () {
+	// 	function toggleNavbarMethod() {
+	// 		if ($(window).width() > 992) {
+	// 			$('.navbar .dropdown').on('mouseover', function () {
+	// 				$('.dropdown-toggle', this).trigger('click');
+	// 			}).on('mouseout', function () {
+	// 				$('.dropdown-toggle', this).trigger('click').blur();
+	// 			});
+	// 		} else {
+	// 			$('.navbar .dropdown').off('mouseover').off('mouseout');
+	// 		}
+	// 	}
+	// 	toggleNavbarMethod();
+	// 	$(window).resize(toggleNavbarMethod);
+	// });
 
 
 	// Back to top button
@@ -157,10 +157,7 @@ cookieChecker();
 
 
 
-
-
-
-// Add to cart
+// Get cart products to show in cart widget
 async function get_cart_products() {
 	// Get stored products from the cart collection
 	let cart_badge = document.querySelector(".cart_badge");
@@ -175,7 +172,7 @@ async function get_cart_products() {
 get_cart_products();
 
 
-// Add to complete procedure 
+// Add to Cart complete procedure 
 function add_to_cart_fun() {
 	const add_to_cart = document.getElementsByClassName("add_to_cart");
 
@@ -216,10 +213,20 @@ function add_to_cart_fun() {
 					let store_cart_pro_to_db_url = "http://localhost:3000/store-cart-porduct-to-db";
 					let stor_to_cart_return = await fetch(store_cart_pro_to_db_url, pro_data_post_req);
 					let d_ret = await stor_to_cart_return.json();
-					console.log(d_ret);
+					// console.log(d_ret);
+
 					// Update Cart Value without sending the request again to the server
 					let cart_badge = document.querySelector(".cart_badge");
 					cart_badge.innerText = parseInt(cart_badge.innerText) + 1;
+					let alertBar = document.getElementById("alertBar");
+					alertBar.innerHTML = `<div class="alert alert-success fade show" role="alert">
+					<strong>Added!</strong> Product is added to cart! &nbsp; <a href="http://localhost:3000/cart"> Go To Cart </a>
+				</div>`;
+					setTimeout(() => {
+						alertBar.innerHTML = "";
+					}, 5000);
+
+
 				}
 				else {
 					alert("Login first, to add into cart ")
@@ -233,3 +240,74 @@ function add_to_cart_fun() {
 }
 
 add_to_cart_fun();
+
+
+// Subtotal and Total product price
+function cartTotalFun() {
+	const singleProTotal = document.getElementsByClassName("singleProTotal");
+	const cartSubTotal = document.getElementById("cartSubTotal");
+	let shippingCost = document.getElementById("shippingCost");
+	let shippingCostVal = parseInt(shippingCost.innerText);
+	let overAllTotal = document.getElementById("overAllTotal");
+	let totalAmount = 0;
+
+	Array.from(singleProTotal).forEach(ele => {
+		totalAmount += parseInt(ele.innerText);
+	});
+
+	cartSubTotal.innerText = totalAmount;
+	overAllTotal.innerText = totalAmount + shippingCostVal;
+
+	if (totalAmount === 0) {
+		overAllTotal.innerText = 0;
+		shippingCost.innerText = 0;
+	} else
+		shippingCost.innerText = 10;
+}
+cartTotalFun();
+
+
+
+// Increase Descrease Product Quantity and Price upon clicking of the +,- buttons
+const pro_minus = document.getElementsByClassName("pro-minus");
+const pro_plus = document.getElementsByClassName("pro-plus");
+
+// For Increment
+Array.from(pro_plus).forEach((ele, ind) => {
+	ele.addEventListener("click", (e) => {
+
+		let realPrice = ele.parentElement.parentElement.parentElement.previousElementSibling.children[1].innerText;
+		realPrice = parseInt(realPrice);
+
+		let totalWala = ele.parentElement.parentElement.parentElement.nextElementSibling.children[1];
+
+		let changeAble = totalWala.innerText;
+		changeAble = parseInt(changeAble);
+
+		totalWala.innerText = changeAble + realPrice;
+
+		cartTotalFun();
+	})
+});
+
+// For Decrement
+Array.from(pro_minus).forEach(ele => {
+	ele.addEventListener("click", (e) => {
+
+		let realPrice = ele.parentElement.parentElement.parentElement.previousElementSibling.children[1].innerText;
+		realPrice = parseInt(realPrice);
+
+		let totalWala = ele.parentElement.parentElement.parentElement.nextElementSibling.children[1];
+
+		let changeAble = totalWala.innerText;
+		changeAble = parseInt(changeAble);
+
+		if (changeAble !== 0)
+			totalWala.innerText = changeAble - realPrice;
+
+		cartTotalFun();
+	})
+});
+
+
+

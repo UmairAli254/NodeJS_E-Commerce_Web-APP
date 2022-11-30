@@ -272,6 +272,11 @@ app.get("/get-cart-products", async (req, res) => {
         res.status(500).send(err);
     }
 
+});
+// Remove product from cart
+app.get("/remove-pro-from-cart/:id", async (req, res) => {
+    const data = await cart_pro_Mr.findByIdAndDelete(req.params.id);
+    res.redirect("http://localhost:3000/cart");
 })
 
 
