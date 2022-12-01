@@ -219,7 +219,7 @@ function add_to_cart_fun() {
 					let cart_badge = document.querySelector(".cart_badge");
 					cart_badge.innerText = parseInt(cart_badge.innerText) + 1;
 					let alertBar = document.getElementById("alertBar");
-					alertBar.innerHTML = `<div class="alert alert-success fade show" role="alert">
+					alertBar.innerHTML = `<div class="alert alert-success fade show w-50 m-auto" role="alert">
 					<strong>Added!</strong> Product is added to cart! &nbsp; <a href="http://localhost:3000/cart"> Go To Cart </a>
 				</div>`;
 					setTimeout(() => {
@@ -238,31 +238,32 @@ function add_to_cart_fun() {
 		})
 	})
 }
-
 add_to_cart_fun();
 
 
 // Subtotal and Total product price
 function cartTotalFun() {
-	const singleProTotal = document.getElementsByClassName("singleProTotal");
-	const cartSubTotal = document.getElementById("cartSubTotal");
-	let shippingCost = document.getElementById("shippingCost");
-	let shippingCostVal = parseInt(shippingCost.innerText);
-	let overAllTotal = document.getElementById("overAllTotal");
-	let totalAmount = 0;
+	if (document.URL === "http://localhost:3000/cart") {
+		const singleProTotal = document.getElementsByClassName("singleProTotal");
+		const cartSubTotal = document.getElementById("cartSubTotal");
+		let shippingCost = document.getElementById("shippingCost");
+		let shippingCostVal = parseInt(shippingCost.innerText);
+		let overAllTotal = document.getElementById("overAllTotal");
+		let totalAmount = 0;
 
-	Array.from(singleProTotal).forEach(ele => {
-		totalAmount += parseInt(ele.innerText);
-	});
+		Array.from(singleProTotal).forEach(ele => {
+			totalAmount += parseInt(ele.innerText);
+		});
 
-	cartSubTotal.innerText = totalAmount;
-	overAllTotal.innerText = totalAmount + shippingCostVal;
+		cartSubTotal.innerText = totalAmount;
+		overAllTotal.innerText = totalAmount + shippingCostVal;
 
-	if (totalAmount === 0) {
-		overAllTotal.innerText = 0;
-		shippingCost.innerText = 0;
-	} else
-		shippingCost.innerText = 10;
+		if (totalAmount === 0) {
+			overAllTotal.innerText = 0;
+			shippingCost.innerText = 0;
+		} else
+			shippingCost.innerText = 10;
+	}
 }
 cartTotalFun();
 
@@ -310,4 +311,92 @@ Array.from(pro_minus).forEach(ele => {
 });
 
 
+
+// Add to favourite
+
+// Get Favourite products to show in Favourite widget
+async function get_fav_products() {
+	// Get stored products from the cart collection
+	let fav_badge = document.querySelector(".fav_badge");
+	let fav_prod_url = "http://localhost:3000/get-fav-products";
+
+	const fav_prod_api_return = await fetch(fav_prod_url);
+	const fav_prod_data = await fav_prod_api_return.json();
+	// console.log(fav_prod_data);
+	if (fav_prod_data.length)
+		fav_badge.innerText = fav_prod_data.length;
+}
+get_fav_products();
+
+
+// Add to favourite complete procedure 
+function add_to_fav_fun() {
+
+	const add_to_favourite = document.getElementsByClassName("add_to_favourite");
+
+	Array.from(add_to_favourite).forEach(ele => {
+		ele.addEventListener("click", async (e) => {
+			try {
+				const isExist = (document.cookie).includes("eShopperLoginToken");
+
+				if (isExist) {
+					let pro_id = e.target.id;
+					let url = `http://localhost:3000/get-product-for-cart/${pro_id}`;
+
+					// // Get product. API
+					let pro_res = await fetch(url);
+					console.log(pro_res);
+					let pro_data = await pro_res.json();
+					console.log(pro_data);
+
+
+
+					// // Get LoggedIn user's email. API
+					let user_res = await fetch("http://localhost:3000/get-loggedin-user-email");
+					let user_data = await user_res.json();
+					// console.log(user_data);
+
+					// Store Product to the Favourite Collection in DB
+					const pro_data_post_req = {
+						method: "POST",
+						headers: {
+							"content-type": "application/json"
+						},
+						body: JSON.stringify({
+							pro_id: pro_data._id,
+							pro_title: pro_data.title,
+							s_price: pro_data.s_price,
+							pro_img: pro_data.primary_img,
+							user_email: user_data
+						})
+					};
+					let store_fav_pro_to_db_url = "http://localhost:3000/store-fav-porduct-to-db";
+					let store_to_fav_return = await fetch(store_fav_pro_to_db_url, pro_data_post_req);
+					let d_ret = await store_to_fav_return.json();
+					console.log(d_ret);
+
+					// Update Favourite Value without sending the request again to the server
+						let fav_badge = document.querySelector(".fav_badge");
+						fav_badge.innerText = parseInt(fav_badge.innerText) + 1;
+						let alertBar = document.getElementById("alertBar");
+						alertBar.innerHTML = `<div class="alert alert-warning fade show w-50 m-auto" role="alert">
+						<strong>Favourite!</strong> Product is added to your favourite list! &nbsp; <a href="http://localhost:3000/favourites"> Go To Favourite List </a>
+					</div>`;
+						setTimeout(() => {
+							alertBar.innerHTML = "";
+						}, 5000);
+
+
+				}
+				else {
+					alert("Login first, to add it into you favourite list. ")
+				}
+
+			} catch (err) {
+				console.log(err);
+			}
+		})
+	})
+}
+add_to_fav_fun();
 

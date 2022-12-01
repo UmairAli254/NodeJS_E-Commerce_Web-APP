@@ -87,7 +87,7 @@
 			<div class="col-lg-3 col-6 text-right">
 				<a href="/favourites" class="btn border">
 					<i class="fas fa-heart text-primary"></i>
-					<span class="badge">0</span>
+					<span class="badge fav_badge">0</span>
 				</a>
 				<a href="/cart" class="btn border">
 					<i class="fas fa-shopping-cart text-primary"></i>
@@ -233,6 +233,10 @@
 								class="btn btn-sm text-dark p-0" id="<%= one._id %>"><i
 									class="fas fa-eye text-primary mr-1"></i>View
 								Detail</a>
+
+								<a class="btn btn-md text-dark p-0 add_to_favourite" id="<%= one._id %>">
+									<i class="fas fa-heart text-primary mr-1"></i>Fav</a>
+
 							<a class="btn btn-sm text-dark p-0 add_to_cart" id="<%= one._id %>"><i
 									class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
 						</div>

@@ -15,6 +15,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const noCache = require("nocache");
 const cart_pro_Mr = require("./model/cart");
+const fav_pro_Mr = require("./model/favourite");
 require("dotenv").config();
 
 
@@ -277,7 +278,72 @@ app.get("/get-cart-products", async (req, res) => {
 app.get("/remove-pro-from-cart/:id", async (req, res) => {
     const data = await cart_pro_Mr.findByIdAndDelete(req.params.id);
     res.redirect("http://localhost:3000/cart");
-})
+});
+
+
+// Favourtie Pages
+app.get("/favourites", async (req, res) => {
+    try {
+        const all_categories = await CMr.find({}, { category_name: true });
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+
+        const data = await fav_pro_Mr.find({ user_email: isVerified });
+
+        res.render("favourite", {
+            categories: all_categories,
+            products: data
+        });
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+
+});
+
+// Store favourtie product to db
+app.post("/store-fav-porduct-to-db", async (req, res) => {
+    try {
+        const data = await fav_pro_Mr(req.body);
+        console.log(data);
+        const ret = await data.save();
+        ret ? res.status(201).send(true) : res.status(500).send(false);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+// API to Get product by id when click on "Add To Favourite"
+app.get("/get-product-for-fav/:id", async (req, res) => {
+    try {
+        const data = await prod_Mr.findById(req.params.id);
+        console.log(data);
+        res.status(200).send(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+// API to get favourite products that are already added into db
+app.get("/get-fav-products", async (req, res) => {
+
+    try {
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+
+        const data = await fav_pro_Mr.find({ user_email: isVerified });
+        res.status(200).send(data);
+
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+
+});
+
+// Remove product from Favourite
+app.get("/remove-pro-from-fav/:id", async (req, res) => {
+    const data = await fav_pro_Mr.findByIdAndDelete(req.params.id);
+    res.redirect("http://localhost:3000/favourites");
+});
 
 
 
