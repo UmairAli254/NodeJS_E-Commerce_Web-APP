@@ -188,12 +188,12 @@ function add_to_cart_fun() {
 					// Get product. API
 					let pro_res = await fetch(url);
 					let pro_data = await pro_res.json();
-					console.log(pro_data);
+					// console.log(pro_data);
 
 					// Get LoggedIn user's email. API
 					let user_res = await fetch("http://localhost:3000/get-loggedin-user-email");
 					let user_data = await user_res.json();
-					console.log(user_data);
+					// console.log(user_data);
 
 					// Store Product to the Cart Collection in DB
 					const pro_data_post_req = {
@@ -247,7 +247,6 @@ function cartTotalFun() {
 		const singleProTotal = document.getElementsByClassName("singleProTotal");
 		const cartSubTotal = document.getElementById("cartSubTotal");
 		let shippingCost = document.getElementById("shippingCost");
-		let shippingCostVal = parseInt(shippingCost.innerText);
 		let overAllTotal = document.getElementById("overAllTotal");
 		let totalAmount = 0;
 
@@ -255,14 +254,15 @@ function cartTotalFun() {
 			totalAmount += parseInt(ele.innerText);
 		});
 
-		cartSubTotal.innerText = totalAmount;
-		overAllTotal.innerText = totalAmount + shippingCostVal;
-
 		if (totalAmount === 0) {
 			overAllTotal.innerText = 0;
 			shippingCost.innerText = 0;
 		} else
 			shippingCost.innerText = 10;
+
+		cartSubTotal.innerText = totalAmount;
+		overAllTotal.innerText = totalAmount + parseInt(shippingCost.innerText);
+
 	}
 }
 cartTotalFun();
@@ -345,9 +345,9 @@ function add_to_fav_fun() {
 
 					// // Get product. API
 					let pro_res = await fetch(url);
-					console.log(pro_res);
+					// console.log(pro_res);
 					let pro_data = await pro_res.json();
-					console.log(pro_data);
+					// console.log(pro_data);
 
 
 
@@ -373,18 +373,18 @@ function add_to_fav_fun() {
 					let store_fav_pro_to_db_url = "http://localhost:3000/store-fav-porduct-to-db";
 					let store_to_fav_return = await fetch(store_fav_pro_to_db_url, pro_data_post_req);
 					let d_ret = await store_to_fav_return.json();
-					console.log(d_ret);
+					// console.log(d_ret);
 
 					// Update Favourite Value without sending the request again to the server
-						let fav_badge = document.querySelector(".fav_badge");
-						fav_badge.innerText = parseInt(fav_badge.innerText) + 1;
-						let alertBar = document.getElementById("alertBar");
-						alertBar.innerHTML = `<div class="alert alert-warning fade show w-50 m-auto" role="alert">
+					let fav_badge = document.querySelector(".fav_badge");
+					fav_badge.innerText = parseInt(fav_badge.innerText) + 1;
+					let alertBar = document.getElementById("alertBar");
+					alertBar.innerHTML = `<div class="alert alert-warning fade show w-50 m-auto" role="alert">
 						<strong>Favourite!</strong> Product is added to your favourite list! &nbsp; <a href="http://localhost:3000/favourites"> Go To Favourite List </a>
 					</div>`;
-						setTimeout(() => {
-							alertBar.innerHTML = "";
-						}, 5000);
+					setTimeout(() => {
+						alertBar.innerHTML = "";
+					}, 5000);
 
 
 				}
@@ -400,3 +400,52 @@ function add_to_fav_fun() {
 }
 add_to_fav_fun();
 
+
+
+// Live Search Engine
+function live_search_engine_fun() {
+	const all_pro_api = "http://localhost:3000/get-all-products";
+	const searchBar = document.getElementById("searchBar");
+	const searchForm = document.getElementById("searchForm");
+	const searchUL = document.getElementById("searchUL");
+
+	searchForm.addEventListener("submit", (e) => {
+		e.preventDefault();
+	});
+
+	// Get All Products
+	const xhr = new XMLHttpRequest();
+	xhr.open("GET", all_pro_api, true);
+	xhr.responseType = "json";
+	xhr.onprogress = () => console.log("Progressing...");
+	xhr.onload = () => {
+		const products = xhr.response;
+		// console.log(products[0].title);
+		// console.log(products[0]._id);
+
+		searchBar.addEventListener("input", (e) => {
+			searchUL.innerHTML = "";
+			for (const one of products) {
+				console.log("__________Again__________");
+				if (searchBar.value !== "") {
+					if (one.title.toLowerCase().includes(searchBar.value.toLowerCase())) {
+						console.log(one.title);
+
+						searchUL.innerHTML += `<li class="list-group-item d-flex justify-content-between border-0 border-bottom-1"> <a href="http://localhost:3000/product/${one.title}/${one._id}" style="text-decoration:none;"> <img src="/img/product_imgs/${one.primary_img}"
+					class="rounded mr-2" width="50px"> ${one.title} </a>
+					<div><span>$</span><span>${one.s_price}</span></div>
+				</li>`;
+
+					} else {
+						// searchUL.innerHTML = "";
+					}
+				} else {
+					searchUL.innerHTML = "";
+				}
+			} // Loop ends here
+
+		}); //Event Listener ends here
+	}
+	xhr.send();
+}
+live_search_engine_fun();

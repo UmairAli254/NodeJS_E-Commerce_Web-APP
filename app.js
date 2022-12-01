@@ -100,7 +100,7 @@ app.get("/blog", async (req, res) => {
 app.get("/blog/:id", async (req, res) => {
     try {
         const post = await PMr.findOne({ _id: req.params.id });
-        console.log(post);
+        // console.log(post);
         res.status(200).send(post);
     } catch (err) {
         res.status(500).send(err);
@@ -252,7 +252,7 @@ app.get("/get-loggedin-user-email", async (req, res) => {
 app.post("/store-cart-porduct-to-db", async (req, res) => {
     try {
         const data = await cart_pro_Mr(req.body);
-        console.log(data);
+        // console.log(data);
         const ret = await data.save();
         ret ? res.status(201).send(true) : res.status(500).send(false);
     } catch (err) {
@@ -304,20 +304,9 @@ app.get("/favourites", async (req, res) => {
 app.post("/store-fav-porduct-to-db", async (req, res) => {
     try {
         const data = await fav_pro_Mr(req.body);
-        console.log(data);
+        // console.log(data);
         const ret = await data.save();
         ret ? res.status(201).send(true) : res.status(500).send(false);
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});
-
-// API to Get product by id when click on "Add To Favourite"
-app.get("/get-product-for-fav/:id", async (req, res) => {
-    try {
-        const data = await prod_Mr.findById(req.params.id);
-        console.log(data);
-        res.status(200).send(data);
     } catch (err) {
         res.status(500).send(err);
     }
@@ -345,6 +334,12 @@ app.get("/remove-pro-from-fav/:id", async (req, res) => {
     res.redirect("http://localhost:3000/favourites");
 });
 
+
+// Live Search Engine APIs
+app.get("/get-all-products", async (req, res) => {
+    const data = await prod_Mr.find({}, { title: true, primary_img: true, s_price: true});
+    res.send(data);
+})
 
 
 

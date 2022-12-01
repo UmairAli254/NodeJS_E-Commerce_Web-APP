@@ -18,15 +18,14 @@
 					<tbody class="align-middle">
 						<% for(let one of products) {%>
 							<tr>
-								<td class="align-middle"><img src="/img/product_imgs/<%= one.pro_img %>"
-										style="width: 50px;"></td>
+								<td class="align-middle"><a href="http://localhost:3000/product/<%= one.pro_title %>/<%= one.pro_id %>"><img src="/img/product_imgs/<%= one.pro_img %>"
+									style="width: 50px;" /></a></td>
 								<td class="align-middle">
 									<a href="http://localhost:3000/product/<%= one.pro_title %>/<%= one.pro_id %>">
 										<%= one.pro_title %>
 									</a>
 								</td>
-								<td class="align-middle"><span>$</span><span>
-										<%= one.s_price %>
+								<td class="align-middle"><span>$</span><span><%= one.s_price %>
 									</span></td>
 
 								<td class="align-middle"><a href="/remove-pro-from-fav/<%= one._id %>"

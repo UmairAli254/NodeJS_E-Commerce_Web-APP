@@ -31,7 +31,7 @@
 
 	<!-- Alert -->
 	<div id="alertBar" class="fixed-top text-center">
-		
+
 	</div>
 
 
@@ -75,9 +75,9 @@
 				</a>
 			</div>
 			<div class="col-lg-6 col-6 text-left">
-				<form action="">
+				<form id="searchForm">
 					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search for products">
+						<input type="text" class="form-control" placeholder="Search for products" id="searchBar" autocomplete="off"/>
 						<div class="input-group-append">
 							<span class="input-group-text bg-transparent text-primary">
 								<i class="fa fa-search"></i>
@@ -85,6 +85,23 @@
 						</div>
 					</div>
 				</form>
+
+				<!-- List of matched products -->
+				<div class="container">
+					<div class="row">
+						<div class="col-12 w-100 mt-1" style="margin-left: -0.9rem">
+							<ul class="list-group w-100 shadow" style="position: absolute; z-index: 99" id="searchUL">
+
+								<!-- <li class="list-group-item"> <a href="#" style="text-decoration:none;"> <img src="/img/carousel-1.jpg"
+								class="rounded mr-2" width="50px"> Cras justo odio </a>
+							</li> -->
+
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- End of List of matched products -->
+
 			</div>
 			<div class="col-lg-3 col-6 text-right">
 				<a href="/favourites" class="btn border">

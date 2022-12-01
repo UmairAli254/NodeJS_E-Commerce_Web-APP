@@ -73,9 +73,9 @@
 				</a>
 			</div>
 			<div class="col-lg-6 col-6 text-left">
-				<form action="">
+				<form id="searchForm">
 					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search for products">
+						<input type="text" class="form-control" placeholder="Search for products" id="searchBar" autocomplete="off"/>
 						<div class="input-group-append">
 							<span class="input-group-text bg-transparent text-primary">
 								<i class="fa fa-search"></i>
@@ -83,6 +83,23 @@
 						</div>
 					</div>
 				</form>
+
+				<!-- List of matched products -->
+				<div class="container">
+					<div class="row">
+						<div class="col-12 w-100 mt-1" style="margin-left: -0.9rem">
+							<ul class="list-group w-100 shadow" style="position: absolute; z-index: 99" id="searchUL">
+								
+								<!-- <li class="list-group-item"> <a href="#" style="text-decoration:none;"> <img src="/img/carousel-1.jpg"
+											class="rounded mr-2" width="50px"> Cras justo odio </a>
+										</li> -->
+					
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- End of List of matched products -->
+
 			</div>
 			<div class="col-lg-3 col-6 text-right">
 				<a href="/favourites" class="btn border">
@@ -223,9 +240,9 @@
 								<%= one.title %>
 							</h6>
 							<div class="d-flex justify-content-center">
-								<h6>$<%= one.s_price %>.00</< /h6>
-										<h6 class="text-muted ml-2"><del>$<%= one.price %>.00</< /del>
-										</h6>
+								<h6>$<%= one.s_price %>.00</del></h6>
+								<h6 class="text-muted ml-2"><del>$<%= one.price %>.00</del>
+								</h6>
 							</div>
 						</div>
 						<div class="card-footer d-flex justify-content-between bg-light border">
@@ -234,8 +251,8 @@
 									class="fas fa-eye text-primary mr-1"></i>View
 								Detail</a>
 
-								<a class="btn btn-md text-dark p-0 add_to_favourite" id="<%= one._id %>">
-									<i class="fas fa-heart text-primary mr-1"></i>Fav</a>
+							<a class="btn btn-md text-dark p-0 add_to_favourite" id="<%= one._id %>">
+								<i class="fas fa-heart text-primary mr-1"></i>Fav</a>
 
 							<a class="btn btn-sm text-dark p-0 add_to_cart" id="<%= one._id %>"><i
 									class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
