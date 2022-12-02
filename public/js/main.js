@@ -408,10 +408,16 @@ function live_search_engine_fun() {
 	const searchBar = document.getElementById("searchBar");
 	const searchForm = document.getElementById("searchForm");
 	const searchUL = document.getElementById("searchUL");
+	// const searchDiv = document.getElementById("searchDiv");
 
 	searchForm.addEventListener("submit", (e) => {
-		e.preventDefault();
+		searchForm.action = `http://localhost:3000/search/${searchBar.value}`;
 	});
+	searchBar.addEventListener("blur", (e) => {
+		setTimeout(() => {
+			searchUL.innerHTML = "";
+		}, 150);
+	})
 
 	// Get All Products
 	const xhr = new XMLHttpRequest();
@@ -423,29 +429,29 @@ function live_search_engine_fun() {
 		// console.log(products[0].title);
 		// console.log(products[0]._id);
 
-		searchBar.addEventListener("input", (e) => {
+		const showResults = () => {
 			searchUL.innerHTML = "";
 			for (const one of products) {
-				console.log("__________Again__________");
+				// console.log("__________Again__________");
 				if (searchBar.value !== "") {
 					if (one.title.toLowerCase().includes(searchBar.value.toLowerCase())) {
-						console.log(one.title);
-
-						searchUL.innerHTML += `<li class="list-group-item d-flex justify-content-between border-0 border-bottom-1"> <a href="http://localhost:3000/product/${one.title}/${one._id}" style="text-decoration:none;"> <img src="/img/product_imgs/${one.primary_img}"
+						console.log("Fouund");
+						searchUL.innerHTML += `<li class="list-group-item d-flex justify-content-between border-0"> <a href="http://localhost:3000/product/${one.title}/${one._id}" style="text-decoration:none;" class="stretched-link"> <img src="/img/product_imgs/${one.primary_img}"
 					class="rounded mr-2" width="50px"> ${one.title} </a>
 					<div><span>$</span><span>${one.s_price}</span></div>
 				</li>`;
 
-					} else {
-						// searchUL.innerHTML = "";
 					}
 				} else {
-					searchUL.innerHTML = "";
+					// searchUL.innerHTML = `<li class="list-group-item d-flex justify-content-between border-0 border-bottom-1"> No Product Found!	</li>`;
 				}
 			} // Loop ends here
+		}; //Event Listener ends here
 
-		}); //Event Listener ends here
+		searchBar.addEventListener("input", showResults);
+		searchBar.addEventListener("focus", showResults);
 	}
 	xhr.send();
+
 }
 live_search_engine_fun();

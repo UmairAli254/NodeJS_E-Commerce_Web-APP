@@ -74,7 +74,18 @@ body {
 }
 
 
+/* Search bar css */
+.list-group-item:hover {
+  background-color: #C17A74;
+  color: white
+}
 
+.list-group-item:hover a {
+  background-color: #C17A74;
+  color: white
+}
+
+/* / Search bar css */
 
 
 [tabindex="-1"]:focus:not(:focus-visible) {

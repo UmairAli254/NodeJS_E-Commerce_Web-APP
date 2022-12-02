@@ -73,7 +73,7 @@
 				</a>
 			</div>
 			<div class="col-lg-6 col-6 text-left">
-				<form id="searchForm">
+				<form action="" method="get" id="searchForm">
 					<div class="input-group">
 						<input type="text" class="form-control" placeholder="Search for products" id="searchBar" autocomplete="off"/>
 						<div class="input-group-append">
@@ -87,12 +87,11 @@
 				<!-- List of matched products -->
 				<div class="container">
 					<div class="row">
-						<div class="col-12 w-100 mt-1" style="margin-left: -0.9rem">
-							<ul class="list-group w-100 shadow" style="position: absolute; z-index: 99" id="searchUL">
+						<div class="col-12 w-100 mt-1" style="margin-left: -0.9rem" tabindex="1" id="searchDiv">
+							<ul class="list-group w-100 shadow" style="position: absolute; z-index: 99" id="searchUL" tabindex="1">
 								
-								<!-- <li class="list-group-item"> <a href="#" style="text-decoration:none;"> <img src="/img/carousel-1.jpg"
-											class="rounded mr-2" width="50px"> Cras justo odio </a>
-										</li> -->
+								<!-- <li class="list-group-item d-flex justify-content-between border-0 border-bottom-1"> No Product Found!
+								</li> -->
 					
 							</ul>
 						</div>
