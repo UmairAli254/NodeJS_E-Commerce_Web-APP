@@ -1,6 +1,11 @@
 "use strict";
 
-let s = "hello to umair";
-let regEx = /^h.*r$/;
+let num = 4.3;
+let i = 0;
 
-console.log(regEx.test(s));
+for (let j = 0; j < num; j++) {
+ i++;
+}
+
+console.log(i);
+

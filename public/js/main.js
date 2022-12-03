@@ -430,13 +430,12 @@ function live_search_engine_fun() {
 	xhr.onprogress = () => console.log("Progressing...");
 	xhr.onload = () => {
 		const products = xhr.response;
-		// console.log(products[0].title);
-		// console.log(products[0]._id);
+
 
 		const showResults = () => {
 			searchUL.innerHTML = "";
 			for (const one of products) {
-				// console.log("__________Again__________");
+
 				if (searchBar.value !== "") {
 					if (one.title.toLowerCase().includes(searchBar.value.toLowerCase().trim())) {
 						console.log("Fouund");
@@ -459,3 +458,187 @@ function live_search_engine_fun() {
 
 }
 live_search_engine_fun();
+
+
+
+// Pagination
+async function pagination_fun() {
+	let all_products_api = "http://localhost:3000/get-all-products";
+	let pages_pagi_show_here = document.getElementById("pages_pagi_show_here");
+
+
+	const pro_res = await fetch(all_products_api);
+	const all_products = await pro_res.json();
+	// console.log(data);
+
+	let num_of_pages = all_products.length / 12;
+	let pages_pagination_list = "";
+
+
+	// Show pagination dynamically
+	for (let i = 0; i < num_of_pages; i++) {
+		pages_pagination_list += `<li class="page-item ${i < 1 ? 'active' : ''}">
+		<a class="page-link" href="http://localhost:3000/shop">${i + 1}</a>
+		</li>`;
+	}
+	pages_pagi_show_here.innerHTML = `<li><a class="page-link" aria-label="Previous" id="pre_pagination">
+	<span aria-hidden="true">&laquo;</span>
+	<span class="sr-only">Previous</span></a> </li>
+
+${pages_pagination_list}
+
+<li> <a class="page-link" aria-label="Next" id="next_pagination">
+<span aria-hidden="true">&raquo;</span>
+<span class="sr-only">Next</span></a> </li>`;
+	// End Here - Show pagination dynamically
+
+
+	// Show Products
+	let show_products_here = document.getElementById("show_products_here");
+	let n1 = 0;
+	// let n2 = 1;
+	let url = `http://localhost:3000/shop/next-page/${n1++}`;
+	const res = await fetch(url);
+	const data = await res.json();
+
+	for (let one of data) {
+		show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+		<div class="card product-item border-0 mb-4">
+			<div
+				class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+				<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
+					alt="${one.title}">
+			</div>
+			<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+				<h6 class="text-truncate mb-3">
+				${one.title}
+				</h6>
+				<div class="d-flex justify-content-center">
+					<h6>$${one.s_price}
+					</h6>
+					<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
+				</div>
+			</div>
+			<div class="card-footer d-flex justify-content-between bg-light border">
+				<a href="http://localhost:3000/product/${one.title}/${one._id}"
+					class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
+					Detail</a>
+
+				<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
+					<i class="fas fa-heart text-primary mr-1"></i>Fav
+				</a>
+
+				<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
+						class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+			</div>
+		</div>
+	</div>
+`;
+	}
+	add_to_fav_fun();
+	add_to_cart_fun();
+
+	// EventListeners on next and previous buttons
+	let pre_pagination = document.getElementById("pre_pagination");
+	let next_pagination = document.getElementById("next_pagination");
+
+
+	// Next Button of Pagination 
+	next_pagination.addEventListener("click", async () => {
+		let url = `http://localhost:3000/shop/next-page/${n1++}`;
+		const res = await fetch(url);
+		const data = await res.json();
+		show_products_here.innerHTML = "";
+
+		for (let one of data) {
+			show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			<div class="card product-item border-0 mb-4">
+				<div
+					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+					<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
+						alt="${one.title}">
+				</div>
+				<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+					<h6 class="text-truncate mb-3">
+					${one.title}
+					</h6>
+					<div class="d-flex justify-content-center">
+						<h6>$${one.s_price}
+						</h6>
+						<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
+					</div>
+				</div>
+				<div class="card-footer d-flex justify-content-between bg-light border">
+					<a href="http://localhost:3000/product/${one.title}/${one._id}"
+						class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
+						Detail</a>
+	
+					<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
+						<i class="fas fa-heart text-primary mr-1"></i>Fav
+					</a>
+	
+					<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
+							class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+				</div>
+			</div>
+		</div>
+	`;
+
+		}
+		add_to_fav_fun();
+		add_to_cart_fun();
+	});
+
+
+	// Previous Button of pagination
+	let p1 = 0;
+	pre_pagination.addEventListener("click", async () => {
+		let url = `http://localhost:3000/shop/pre-page/${p1++}`;
+
+		const res = await fetch(url);
+		const data = await res.json();
+		show_products_here.innerHTML = "";
+
+		for (let one of data) {
+			show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			<div class="card product-item border-0 mb-4">
+				<div
+					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+					<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
+						alt="${one.title}">
+				</div>
+				<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+					<h6 class="text-truncate mb-3">
+					${one.title}
+					</h6>
+					<div class="d-flex justify-content-center">
+						<h6>$${one.s_price}
+						</h6>
+						<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
+					</div>
+				</div>
+				<div class="card-footer d-flex justify-content-between bg-light border">
+					<a href="http://localhost:3000/product/${one.title}/${one._id}"
+						class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
+						Detail</a>
+	
+					<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
+						<i class="fas fa-heart text-primary mr-1"></i>Fav
+					</a>
+	
+					<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
+							class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+				</div>
+			</div>
+		</div>
+	`;
+
+		}
+		add_to_fav_fun();
+		add_to_cart_fun();
+	});
+
+
+
+}
+pagination_fun();

@@ -8,7 +8,7 @@ require("dotenv").config();
 const Sr = new mongoose.Schema({
 	name: {
 		type: String,
-		required: true
+		// required: true
 	},
 	email: {
 		type: String,
@@ -16,10 +16,14 @@ const Sr = new mongoose.Schema({
 			if (!validator.isEmail(val))
 				throw new Error("Invalid Email");
 		},
-		required: true,
+		// required: true,
 		index: {
 			unique: true
 		}
+	},
+	profile_img: {
+		type: String,
+		default: ""
 	},
 	pass: {
 		type: String,

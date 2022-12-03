@@ -5,7 +5,7 @@
  * Copyright 2011-2020 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-:root {
+:root { 
   --blue: #007bff;
   --indigo: #6610f2;
   --purple: #6f42c1;
@@ -77,8 +77,9 @@ body {
 /* Search bar css */
 .list-group-item:hover {
   background-color: #C17A74;
-  color: white
+  color: white;
 }
+
 
 .list-group-item:hover a {
   background-color: #C17A74;
@@ -86,6 +87,20 @@ body {
 }
 
 /* / Search bar css */
+
+/* User profile */
+.user-profile-pages-list:hover a{
+  text-decoration: none;
+}
+
+
+/* Pagination for shop page */
+#pre_pagination,
+#next_pagination {
+  cursor: pointer
+}
+
+/* End of Pagination for shop page */
 
 
 [tabindex="-1"]:focus:not(:focus-visible) {

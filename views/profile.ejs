@@ -1,5 +1,93 @@
 <%- include("./partials/header", {title: "Profile" }); %>
 
- <h1>Profile Page</h1>
+ <section style="background-color: #eee;">
+  <div class="container py-5">
+
+
+   <div class="row">
+    <div class="col-lg-4">
+     <div class="card mb-4">
+      <div class="card-body text-center">
+       <img src="/img/product_imgs/<%= data.profile_img %>" alt="avatar" class="rounded-circle img-fluid"
+        style="width: 150px;">
+       <h5 class="my-3"><u><%= data.name %></u></h5>
+       <p class="text-muted mb-1">E-Shopper</p>
+       <p class="text-muted mb-4">Best eCommerce Platform</p>
+       <div class="d-flex justify-content-center mb-2">
+
+        <a class="btn btn-outline-primary ms-1" href="http://localhost:3000/shop"> Let's do shopping </a>
+
+       </div>
+      </div>
+     </div>
+     <div class="card mb-4 mb-lg-0">
+      <div class="card-body p-0">
+
+       <ul class="list-group list-group-flush rounded-3">
+
+        <li class="list-group-item d-flex justify-content-between align-items-center p-3 user-profile-pages-list"
+         role="button">
+         <i class="fas fa-heart fa-lg text-warning"></i>
+         <a href="http://localhost:3000/favourites" class="stretched-link">
+          <p class="mb-0">Favourites (<span id="userFavVal"></span>)</p>
+         </a>
+        </li>
+
+        <li class="list-group-item d-flex justify-content-between align-items-center p-3 user-profile-pages-list"
+         role="button">
+         <i class="fas fa-shopping-cart fa-lg "></i>
+         <a href="http://localhost:3000/cart" class="stretched-link">
+          <p class="mb-0">Cart (<span id="userCartVal"></span>)</p>
+         </a>
+        </li>
+
+       </ul>
+      </div>
+     </div>
+    </div>
+    <div class="col-lg-8">
+     <div class="card mb-4">
+      <div class="card-body">
+       <div class="row">
+        <form action="/profile-update" method="post" class="text-center m-auto" enctype="multipart/form-data">
+         <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
+          <input type="text" class="form-control" placeholder="Name" name="name" />
+          <span class="input-group-text ml-2" id="basic-addon2"><i class="fas fa-at"></i></span>
+          <input type="email" class="form-control" placeholder="Your Email..." name="email" value="<%= data.email %>" disabled />
+         </div>
+
+         <div class="input-group mb-3 d-flex">
+          <label for="formFileDisabled" class="form-label alilgn-middle my-auto"> Profile Photo: </label>
+          <input type="file" class="form-control ml-3 bg-secondary" id="userImage" role="button" name="userImage" />
+         </div>
+
+         <button type="submit" class="btn btn-primary mt-3">Update</button>
+        </form>
+       </div>
+
+
+
+
+      </div>
+     </div>
+
+    </div>
+ </section>
+
+ <script>
+
+  window.onload = function () {
+
+   setTimeout(() => {
+
+    document.querySelector("#userCartVal").innerText = document.querySelector(".cart_badge").innerText
+    document.querySelector("#userFavVal").innerText = document.querySelector(".fav_badge").innerText;
+   }, 1000);
+
+  }
+
+ </script>
+
 
  <%- include("./partials/footer") %>

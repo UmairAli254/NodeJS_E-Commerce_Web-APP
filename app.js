@@ -37,7 +37,7 @@ app.use(noCache());
 // Routing
 app.get("/", async (req, res) => {
     const all_categories = await CMr.find({}, { category_name: true });
-    const products = await prod_Mr.find().limit(8);
+    const products = await prod_Mr.find().sort({ _id: -1 }).limit(8);
 
     res.render("home", {
         categories: all_categories,
@@ -45,17 +45,27 @@ app.get("/", async (req, res) => {
     });
 });
 
+// app.get("/shop", async (req, res) => {
+//     const all_categories = await CMr.find({}, { category_name: true });
+//     const products = await prod_Mr.find().sort({ _id: -1 });
+
+//     let obj = {
+//         categories: all_categories,
+//         products
+//     };
+
+//     res.render("shop", obj);
+// });
 app.get("/shop", async (req, res) => {
     const all_categories = await CMr.find({}, { category_name: true });
-    const products = await prod_Mr.find();
+    // const products = await prod_Mr.find().sort({ _id: -1 });
 
     let obj = {
-        categories: all_categories,
-        products
+        categories: all_categories
     };
 
     res.render("shop", obj);
-})
+});
 
 // Single Product
 app.get("/product/:name/:id", async (req, res) => {
@@ -180,11 +190,14 @@ app.post("/login", async (req, res) => {
 app.get("/profile", async (req, res) => {
     try {
         const all_categories = await CMr.find({}, { category_name: true });
-
         const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+
+        const data = await UMr.findOne({ email: isVerified });
+
         if (isVerified) {
             res.render("profile", {
-                categories: all_categories
+                categories: all_categories,
+                data
             });
         } else
             res.redirect("//localhost:3000/login");
@@ -193,6 +206,61 @@ app.get("/profile", async (req, res) => {
     }
 
 });
+
+const user_profile_storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/img/product_imgs");
+    },
+    filename: function (req, file, cb) {
+        cb(null, path.parse(file.originalname).name + "-" + Date.now() + path.extname(file.originalname));
+    }
+});
+const user_profile_upload = multer({ storage: user_profile_storage });
+
+app.post("/profile-update", user_profile_upload.single("userImage"), async (req, res) => {
+
+    const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+    // console.log(req.file);
+    // console.log(req.body);
+
+    let filename;
+    try {
+        filename = req.file.filename;
+    } catch {
+        filename = "";
+    }
+
+
+    if (filename === "" && req.body.name === "") {
+        res.redirect("http://localhost:3000/profile");
+
+    } else if (filename !== "" && req.body.name === "") {
+        await UMr.updateOne({ email: isVerified }, {
+            $set: {
+                profile_img: req.file.filename
+            }
+        });
+        res.redirect("http://localhost:3000/profile");
+    } else if (filename === "" && req.body.name !== "") {
+        await UMr.updateOne({ email: isVerified }, {
+            $set: {
+                name: req.body.name,
+            }
+        });
+        res.redirect("http://localhost:3000/profile");
+    } else {
+        await UMr.updateOne({ email: isVerified }, {
+            $set: {
+                name: req.body.name,
+                profile_img: req.file.filename
+            }
+        });
+        res.redirect("http://localhost:3000/profile");
+    }
+
+    // res.redirect("http://localhost:3000/profile");
+})
+
 
 app.get("/logout", (req, res) => {
     res.clearCookie("eShopperLoginToken");
@@ -362,7 +430,42 @@ app.get("/search/:name?", async (req, res) => {
             data
         })
     }
-})
+});
+
+
+// Paginaion
+// Next
+app.get("/shop/next-page/:skip", async (req, res) => {
+    try {
+        let skip = req.params.skip * 12;
+        // let limit = req.params.limit * 12;
+        const data = await prod_Mr.find().skip(skip).limit(12);
+
+        console.log(data);
+        res.status(200).send(data);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+
+});
+// Previous
+app.get("/shop/pre-page/:skip", async (req, res) => {
+    try {
+        let skip = req.params.skip * 12;
+        // let limit = req.params.limit * 12;
+        const data = await prod_Mr.find().skip(skip).limit(12).sort({ _id: -1 });
+
+        console.log(data);
+        res.status(200).send(data);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+
+});
+
+// Pagination ends here
 
 
 
