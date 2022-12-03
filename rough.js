@@ -1,5 +1,6 @@
 "use strict";
 
-let s = "helo to me";
-let x = ("%s", s);
-console.log(x);
+let s = "hello to umair";
+let regEx = /^h.*r$/;
+
+console.log(regEx.test(s));

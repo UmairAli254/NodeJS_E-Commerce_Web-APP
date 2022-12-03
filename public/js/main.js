@@ -410,16 +410,20 @@ function live_search_engine_fun() {
 	const searchUL = document.getElementById("searchUL");
 	// const searchDiv = document.getElementById("searchDiv");
 
+
+	// For the separate search page
 	searchForm.addEventListener("submit", (e) => {
-		searchForm.action = `http://localhost:3000/search/${searchBar.value}`;
+		let pro_name = searchBar.value.trim();
+		searchForm.action = `http://localhost:3000/search/${pro_name}`;
 	});
 	searchBar.addEventListener("blur", (e) => {
 		setTimeout(() => {
 			searchUL.innerHTML = "";
 		}, 150);
-	})
+	});
 
-	// Get All Products
+
+	// Get All Products. Show product below the search bar
 	const xhr = new XMLHttpRequest();
 	xhr.open("GET", all_pro_api, true);
 	xhr.responseType = "json";
@@ -434,7 +438,7 @@ function live_search_engine_fun() {
 			for (const one of products) {
 				// console.log("__________Again__________");
 				if (searchBar.value !== "") {
-					if (one.title.toLowerCase().includes(searchBar.value.toLowerCase())) {
+					if (one.title.toLowerCase().includes(searchBar.value.toLowerCase().trim())) {
 						console.log("Fouund");
 						searchUL.innerHTML += `<li class="list-group-item d-flex justify-content-between border-0"> <a href="http://localhost:3000/product/${one.title}/${one._id}" style="text-decoration:none;" class="stretched-link"> <img src="/img/product_imgs/${one.primary_img}"
 					class="rounded mr-2" width="50px"> ${one.title} </a>

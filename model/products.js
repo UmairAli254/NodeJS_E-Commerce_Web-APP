@@ -2,7 +2,10 @@
 const mongoose = require("mongoose");
 
 const Sr = new mongoose.Schema({
-    title: String,
+    title: {
+        type: String,
+        trim: true
+    },
     category: String,
     description: String,
     price: Number,

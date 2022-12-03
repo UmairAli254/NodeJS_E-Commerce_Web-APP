@@ -341,18 +341,27 @@ app.get("/get-all-products", async (req, res) => {
     res.send(data);
 })
 // Search page for the products from the serach engine
-app.get("/search/:name", async (req, res) => {
+app.get("/search/:name?", async (req, res) => {
     const all_categories = await CMr.find({}, { category_name: true });
-    // const naming = req.params.name;
-    // const naming = 
-    // console.log(naming);
-    const data = await prod_Mr.find({ title: { $regex: `${req.params.name}`, $options: "i" } });
-    console.log(data);
-    res.render("searched", {
-        categories: all_categories,
-        search_pro: req.params.name,
-        data
-    })
+
+    if (req.params.name) {
+        const data = await prod_Mr.find({ title: { $regex: `${req.params.name}`, $options: "i" } });
+        console.log(data);
+        res.render("searched", {
+            categories: all_categories,
+            search_pro: req.params.name,
+            data
+        })
+    } else {
+        const data = await prod_Mr.find();
+        console.log(data);
+        res.render("searched", {
+            categories: all_categories,
+            search_pro: "You didn't searched anything!",
+            msg: "Showing All Available Products",
+            data
+        })
+    }
 })
 
 
