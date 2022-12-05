@@ -463,25 +463,26 @@ live_search_engine_fun();
 
 // Pagination
 async function pagination_fun() {
-	let all_products_api = "http://localhost:3000/get-all-products";
-	let pages_pagi_show_here = document.getElementById("pages_pagi_show_here");
+	if (document.URL === "http://localhost:3000/shop") {
+		let all_products_api = "http://localhost:3000/get-all-products";
+		let pages_pagi_show_here = document.getElementById("pages_pagi_show_here");
 
 
-	const pro_res = await fetch(all_products_api);
-	const all_products = await pro_res.json();
-	// console.log(data);
+		const pro_res = await fetch(all_products_api);
+		const all_products = await pro_res.json();
+		// console.log(data);
 
-	let num_of_pages = all_products.length / 12;
-	let pages_pagination_list = "";
+		let num_of_pages = all_products.length / 12;
+		let pages_pagination_list = "";
 
 
-	// Show pagination dynamically
-	for (let i = 0; i < num_of_pages; i++) {
-		pages_pagination_list += `<li class="page-item ${i < 1 ? 'active' : ''}">
+		// Show pagination dynamically
+		for (let i = 0; i < num_of_pages; i++) {
+			pages_pagination_list += `<li class="page-item ${i < 1 ? 'active' : ''}">
 		<a class="page-link" href="http://localhost:3000/shop">${i + 1}</a>
 		</li>`;
-	}
-	pages_pagi_show_here.innerHTML = `<li><a class="page-link" aria-label="Previous" id="pre_pagination">
+		}
+		pages_pagi_show_here.innerHTML = `<li><a class="page-link" aria-label="Previous" id="pre_pagination">
 	<span aria-hidden="true">&laquo;</span>
 	<span class="sr-only">Previous</span></a> </li>
 
@@ -490,19 +491,19 @@ ${pages_pagination_list}
 <li> <a class="page-link" aria-label="Next" id="next_pagination">
 <span aria-hidden="true">&raquo;</span>
 <span class="sr-only">Next</span></a> </li>`;
-	// End Here - Show pagination dynamically
+		// End Here - Show pagination dynamically
 
 
-	// Show Products
-	let show_products_here = document.getElementById("show_products_here");
-	let n1 = 0;
-	// let n2 = 1;
-	let url = `http://localhost:3000/shop/next-page/${n1++}`;
-	const res = await fetch(url);
-	const data = await res.json();
+		// Show Products
+		let show_products_here = document.getElementById("show_products_here");
+		let n1 = 0;
+		// let n2 = 1;
+		let url = `http://localhost:3000/shop/next-page/${n1++}`;
+		const res = await fetch(url);
+		const data = await res.json();
 
-	for (let one of data) {
-		show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+		for (let one of data) {
+			show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
 		<div class="card product-item border-0 mb-4">
 			<div
 				class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
@@ -534,111 +535,221 @@ ${pages_pagination_list}
 		</div>
 	</div>
 `;
+		}
+		add_to_fav_fun();
+		add_to_cart_fun();
+
+		// EventListeners on next and previous buttons
+		let pre_pagination = document.getElementById("pre_pagination");
+		let next_pagination = document.getElementById("next_pagination");
+
+
+		// Next Button of Pagination 
+		next_pagination.addEventListener("click", async () => {
+			let url = `http://localhost:3000/shop/next-page/${n1++}`;
+			const res = await fetch(url);
+			const data = await res.json();
+			show_products_here.innerHTML = "";
+
+			for (let one of data) {
+				show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			<div class="card product-item border-0 mb-4">
+				<div
+					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+					<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
+						alt="${one.title}">
+				</div>
+				<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+					<h6 class="text-truncate mb-3">
+					${one.title}
+					</h6>
+					<div class="d-flex justify-content-center">
+						<h6>$${one.s_price}
+						</h6>
+						<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
+					</div>
+				</div>
+				<div class="card-footer d-flex justify-content-between bg-light border">
+					<a href="http://localhost:3000/product/${one.title}/${one._id}"
+						class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
+						Detail</a>
+	
+					<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
+						<i class="fas fa-heart text-primary mr-1"></i>Fav
+					</a>
+	
+					<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
+							class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+				</div>
+			</div>
+		</div>
+	`;
+
+			}
+			add_to_fav_fun();
+			add_to_cart_fun();
+		});
+
+
+		// Previous Button of pagination
+		let p1 = 0;
+		pre_pagination.addEventListener("click", async () => {
+			let url = `http://localhost:3000/shop/pre-page/${p1++}`;
+
+			const res = await fetch(url);
+			const data = await res.json();
+			show_products_here.innerHTML = "";
+
+			for (let one of data) {
+				show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			<div class="card product-item border-0 mb-4">
+				<div
+					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+					<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
+						alt="${one.title}">
+				</div>
+				<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+					<h6 class="text-truncate mb-3">
+					${one.title}
+					</h6>
+					<div class="d-flex justify-content-center">
+						<h6>$${one.s_price}
+						</h6>
+						<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
+					</div>
+				</div>
+				<div class="card-footer d-flex justify-content-between bg-light border">
+					<a href="http://localhost:3000/product/${one.title}/${one._id}"
+						class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
+						Detail</a>
+	
+					<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
+						<i class="fas fa-heart text-primary mr-1"></i>Fav
+					</a>
+	
+					<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
+							class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+				</div>
+			</div>
+		</div>
+	`;
+
+			}
+			add_to_fav_fun();
+			add_to_cart_fun();
+		});
+
+
 	}
-	add_to_fav_fun();
-	add_to_cart_fun();
-
-	// EventListeners on next and previous buttons
-	let pre_pagination = document.getElementById("pre_pagination");
-	let next_pagination = document.getElementById("next_pagination");
-
-
-	// Next Button of Pagination 
-	next_pagination.addEventListener("click", async () => {
-		let url = `http://localhost:3000/shop/next-page/${n1++}`;
-		const res = await fetch(url);
-		const data = await res.json();
-		show_products_here.innerHTML = "";
-
-		for (let one of data) {
-			show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-			<div class="card product-item border-0 mb-4">
-				<div
-					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-					<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
-						alt="${one.title}">
-				</div>
-				<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-					<h6 class="text-truncate mb-3">
-					${one.title}
-					</h6>
-					<div class="d-flex justify-content-center">
-						<h6>$${one.s_price}
-						</h6>
-						<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
-					</div>
-				</div>
-				<div class="card-footer d-flex justify-content-between bg-light border">
-					<a href="http://localhost:3000/product/${one.title}/${one._id}"
-						class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
-						Detail</a>
-	
-					<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
-						<i class="fas fa-heart text-primary mr-1"></i>Fav
-					</a>
-	
-					<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
-							class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-				</div>
-			</div>
-		</div>
-	`;
-
-		}
-		add_to_fav_fun();
-		add_to_cart_fun();
-	});
-
-
-	// Previous Button of pagination
-	let p1 = 0;
-	pre_pagination.addEventListener("click", async () => {
-		let url = `http://localhost:3000/shop/pre-page/${p1++}`;
-
-		const res = await fetch(url);
-		const data = await res.json();
-		show_products_here.innerHTML = "";
-
-		for (let one of data) {
-			show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-			<div class="card product-item border-0 mb-4">
-				<div
-					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-					<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
-						alt="${one.title}">
-				</div>
-				<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-					<h6 class="text-truncate mb-3">
-					${one.title}
-					</h6>
-					<div class="d-flex justify-content-center">
-						<h6>$${one.s_price}
-						</h6>
-						<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
-					</div>
-				</div>
-				<div class="card-footer d-flex justify-content-between bg-light border">
-					<a href="http://localhost:3000/product/${one.title}/${one._id}"
-						class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
-						Detail</a>
-	
-					<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
-						<i class="fas fa-heart text-primary mr-1"></i>Fav
-					</a>
-	
-					<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
-							class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-				</div>
-			</div>
-		</div>
-	`;
-
-		}
-		add_to_fav_fun();
-		add_to_cart_fun();
-	});
-
-
-
 }
 pagination_fun();
+
+
+
+// Purchase product
+async function pay_now() {
+	if (document.URL === "http://localhost:3000/cart") {
+		const priceInPopUP = document.getElementsByClassName("priceInPopUP");
+		const quantityInPopUp = document.getElementsByClassName("quantityInPopUp");
+		const proceedToCheckoutBtn = document.getElementById("proceedToCheckoutBtn");
+		const shippingCost = document.getElementById("shippingCost").innerText;
+		const payNow = document.getElementById("payNow");
+		const all_cartPro_api = "http://localhost:3000/get-cart-products";
+		const sold_pro_api = "http://localhost:3000/store-sold-to-db";
+		let custom_message = document.getElementById("custom_message");
+		let popupTable = document.getElementById("popupTable");
+
+
+		payNow.addEventListener("click", async () => {
+
+			let all_pro_latest_price_in_popup = [];
+			let all_pro_latest_quantity_in_popup = [];
+
+			Array.from(priceInPopUP).forEach((ele, ind) => {
+				all_pro_latest_price_in_popup.push(ele.innerText);
+			});
+			console.log(all_pro_latest_price_in_popup);
+
+			Array.from(quantityInPopUp).forEach((ele) => {
+				all_pro_latest_quantity_in_popup.push(ele.innerText);
+			});
+			console.log(all_pro_latest_quantity_in_popup);
+
+
+
+			// API
+			const all_cart_pro = await fetch(all_cartPro_api);
+			const all_cart_pro_data = await all_cart_pro.json();
+
+			// console.log(all_cart_pro_data);
+
+			all_cart_pro_data.forEach((ele, ind) => {
+
+				ele.quantity = parseInt(all_pro_latest_quantity_in_popup[ind]);
+				ele.shipping_cost = parseInt(shippingCost);
+				ele.total_amount = parseInt(all_pro_latest_price_in_popup[ind]);
+				delete ele.__v;
+				delete ele.date;
+				delete ele._id;
+
+			});
+
+			console.table(all_cart_pro_data);
+
+
+			// Save the data/purchased-items to the database
+			const sold_post_data = {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify(all_cart_pro_data)
+			}
+			const sold_pro_api_ret = await fetch("http://localhost:3000/store-sold-to-db", sold_post_data);
+			const sold_pro_data = await sold_pro_api_ret.json();
+			// console.log(sold_pro_data);
+
+
+			// Empty Cart After purchasing
+			const deleteProducts = await fetch("http://localhost:3000/remove-products-from-cart");
+			const deletePorductsData = await deleteProducts.json();
+			if (deletePorductsData) {
+
+				popupTable.innerHTML = `<p class="text-success text-center m-auto">
+				<strong>Done!</strong> Your order is placed. &nbsp; <br/> <a href="http://localhost:3000/profile"> Go to your dashboard for details </a>
+				</p>`;
+				custom_message.innerHTML = `<span class="m-auto text-center m-auto" id="custom_message">Shipping Address: <span
+				class="text-primary font-weight-bold">Default.</span></span>`;
+
+				setTimeout(() => {
+					window.location = "http://localhost:3000/profile";
+				}, 3000);
+
+
+			} else {
+				console.log(deletePorductsData);
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+		}); //Pay Now Button EventListener ends here
+
+
+
+	}
+}
+pay_now();
+
+
+
+
+
+
+

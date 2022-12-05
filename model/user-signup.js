@@ -21,6 +21,10 @@ const Sr = new mongoose.Schema({
 			unique: true
 		}
 	},
+	address: {
+		type: String,
+		default: ""
+	},
 	profile_img: {
 		type: String,
 		default: ""

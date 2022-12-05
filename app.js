@@ -17,6 +17,7 @@ const noCache = require("nocache");
 const cart_pro_Mr = require("./model/cart");
 const fav_pro_Mr = require("./model/favourite");
 require("dotenv").config();
+const sold_Mr = require("./model/sold_products");
 
 
 // Variables
@@ -39,6 +40,9 @@ app.get("/", async (req, res) => {
     const all_categories = await CMr.find({}, { category_name: true });
     const products = await prod_Mr.find().sort({ _id: -1 }).limit(8);
 
+    for (let i = 0; i < 5; i++) {
+        console.log(i);
+    }
     res.render("home", {
         categories: all_categories,
         products: products
@@ -231,20 +235,11 @@ app.post("/profile-update", user_profile_upload.single("userImage"), async (req,
     }
 
 
-    if (filename === "" && req.body.name === "") {
-        res.redirect("http://localhost:3000/profile");
-
-    } else if (filename !== "" && req.body.name === "") {
-        await UMr.updateOne({ email: isVerified }, {
-            $set: {
-                profile_img: req.file.filename
-            }
-        });
-        res.redirect("http://localhost:3000/profile");
-    } else if (filename === "" && req.body.name !== "") {
+    if (filename === "") {
         await UMr.updateOne({ email: isVerified }, {
             $set: {
                 name: req.body.name,
+                address: req.body.address
             }
         });
         res.redirect("http://localhost:3000/profile");
@@ -252,6 +247,7 @@ app.post("/profile-update", user_profile_upload.single("userImage"), async (req,
         await UMr.updateOne({ email: isVerified }, {
             $set: {
                 name: req.body.name,
+                address: req.body.address,
                 profile_img: req.file.filename
             }
         });
@@ -268,14 +264,22 @@ app.get("/logout", (req, res) => {
 });
 
 // End User Account
-
 app.get("/checkout", async (req, res) => {
-    const all_categories = await CMr.find({}, { category_name: true });
+    try {
+        const all_categories = await CMr.find({}, { category_name: true });
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
 
-    res.render("checkout", {
-        categories: all_categories
-    });
-})
+        const data = await cart_pro_Mr.find({ user_email: isVerified });
+
+        res.render("checkout", {
+            categories: all_categories,
+            products: data
+        });
+
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
 
 // Cart Page and Add to cart process below
 // Cart Page
@@ -398,9 +402,37 @@ app.get("/get-fav-products", async (req, res) => {
 
 // Remove product from Favourite
 app.get("/remove-pro-from-fav/:id", async (req, res) => {
-    const data = await fav_pro_Mr.findByIdAndDelete(req.params.id);
+    await fav_pro_Mr.findByIdAndDelete(req.params.id);
     res.redirect("http://localhost:3000/favourites");
 });
+
+// Store the sold products to database
+app.post("/store-sold-to-db", async (req, res) => {
+    try {
+        const data = await sold_Mr.insertMany(req.body);
+        res.status(201).send(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+// Delete the products from cart after purchasing
+app.get("/remove-products-from-cart", async (req, res) => {
+    try {
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+        const data = await cart_pro_Mr.deleteMany({ email: isVerified });
+        res.send(data);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+
+
+
+
+
 
 
 // Live Search Engine APIs
@@ -414,7 +446,7 @@ app.get("/search/:name?", async (req, res) => {
 
     if (req.params.name) {
         const data = await prod_Mr.find({ title: { $regex: `${req.params.name}`, $options: "i" } });
-        console.log(data);
+        // console.log(data);
         res.render("searched", {
             categories: all_categories,
             search_pro: req.params.name,
@@ -422,7 +454,7 @@ app.get("/search/:name?", async (req, res) => {
         })
     } else {
         const data = await prod_Mr.find();
-        console.log(data);
+        // console.log(data);
         res.render("searched", {
             categories: all_categories,
             search_pro: "You didn't searched anything!",
@@ -441,10 +473,10 @@ app.get("/shop/next-page/:skip", async (req, res) => {
         // let limit = req.params.limit * 12;
         const data = await prod_Mr.find().skip(skip).limit(12);
 
-        console.log(data);
+        // console.log(data);
         res.status(200).send(data);
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send(err);
     }
 
@@ -456,10 +488,10 @@ app.get("/shop/pre-page/:skip", async (req, res) => {
         // let limit = req.params.limit * 12;
         const data = await prod_Mr.find().skip(skip).limit(12).sort({ _id: -1 });
 
-        console.log(data);
+        // console.log(data);
         res.status(200).send(data);
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send(err);
     }
 
@@ -541,7 +573,7 @@ app.post("/admin/posts/update/:id", async (req, res) => {
         await PMr.findByIdAndUpdate(req.params.id, req.body);
         res.redirect("//localhost:3000/admin/posts");
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send(err);
     }
 });
@@ -551,7 +583,7 @@ app.get("/admin/posts/delete/:id", async (req, res) => {
         await PMr.findByIdAndDelete(req.params.id);
         res.redirect("//localhost:3000/admin/posts");
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send(err);
     }
 });
@@ -574,7 +606,7 @@ app.get("/admin/categories/update/:id/:cat_name", async (req, res) => {
         await CMr.findByIdAndUpdate(req.params.id, { category_name: req.params.cat_name });
         res.redirect("//localhost:3000/admin/categories");
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send(err);
     }
 });
@@ -584,7 +616,7 @@ app.get("/admin/categories/delete/:id", async (req, res) => {
         await CMr.findByIdAndDelete(req.params.id);
         res.redirect("//localhost:3000/admin/categories");
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send(err);
     }
 });
@@ -708,7 +740,7 @@ app.post("/admin/product/update/:id", multipleUpload, async (req, res) => {
         res.redirect("http://localhost:3000/admin/products/");
 
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send(err);
     }
 });

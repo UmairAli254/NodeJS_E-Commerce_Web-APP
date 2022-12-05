@@ -33,14 +33,16 @@
 					<tbody class="align-middle">
 						<% for(let one of products) {%>
 							<tr>
-								<td class="align-middle border-right-0 text-right"><a href="http://localhost:3000/product/<%= one.pro_title %>/<%= one.pro_id %>"><img src="/img/product_imgs/<%= one.pro_img %>"
-										style="width: 50px;" /></a></td>
+								<td class="align-middle border-right-0 text-right"><a
+										href="http://localhost:3000/product/<%= one.pro_title %>/<%= one.pro_id %>"><img
+											src="/img/product_imgs/<%= one.pro_img %>" style="width: 50px;" /></a></td>
 								<td class="align-middle text-left border-left-0">
 									<a href="http://localhost:3000/product/<%= one.pro_title %>/<%= one.pro_id %>">
 										<%= one.pro_title %>
 									</a>
 								</td>
-								<td class="align-middle"><span>$</span><span><%= one.s_price %>
+								<td class="align-middle"><span>$</span><span>
+										<%=one.s_price %>
 									</span></td>
 								<td class="align-middle">
 									<div class="input-group quantity mx-auto" style="width: 100px;">
@@ -50,7 +52,8 @@
 												<i class="fa fa-minus"></i>
 											</button>
 										</div>
-										<input type="text" class="form-control form-control-sm bg-secondary text-center"
+										<input type="text"
+											class="form-control form-control-sm bg-secondary text-center productQuantityValue"
 											style="height: 1.5rem; z-index: -1" value="1">
 										<div class="input-group-btn">
 											<button class="btn btn-sm btn-primary btn-plus pro-plus"
@@ -60,7 +63,8 @@
 										</div>
 									</div>
 								</td>
-								<td class="align-middle"><span>$</span><span class="singleProTotal"><%= one.s_price %>
+								<td class="align-middle"><span>$</span><span class="singleProTotal">
+										<%=one.s_price %>
 									</span></td>
 								<td class="align-middle"><a href="/remove-pro-from-cart/<%= one._id %>"
 										class="btn btn-sm btn-primary removeProFromCart" id="<%= one._id %>"><i
@@ -90,13 +94,147 @@
 							<h5 class="font-weight-bold">Total</h5>
 							<h5 class="font-weight-bold"><span>$</span><span id="overAllTotal">0</span></h5>
 						</div>
-						<button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+						<button class="btn btn-block btn-primary my-3 py-3" 
+						<% if(products.length !==0) { %>
+							data-toggle="modal"
+							data-target="#modalForConfimartion"
+							<% } else{ %>
+								data-toggle="modal"
+								data-target="#modalForEmptyCart"
+								<% } %>
+
+									id="proceedToCheckoutBtn">Proceed To Checkout
+						</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- Cart End -->
+
+
+
+	<!-- Modal -->
+	<div class="modal fade in" id="modalForConfimartion" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true"
+		data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header bg-primary text-light">
+					<h5 class="m-auto modal-title" id="modalLabel">Please Confirm</h5>
+				</div>
+				<div class="modal-body">
+
+					<table class="table table-bordered text-center mb-0" id="popupTable">
+						<thead class="bg-secondary text-dark" style="position: sticky; top: 0;">
+							<tr>
+								<!-- <th class="text-right" style="width:5%;">Product</th> -->
+								<th style="width: 0.5%">#</th>
+								<th class="text-left">Name</th>
+								<th>Quantity</th>
+								<th>Price</th>
+							</tr>
+						</thead>
+						<tbody class="align-middle">
+
+							<% let i=1; %>
+								<% for(let one of products) {%>
+									<tr>
+										<!-- Title -->
+										<td class="align-middle text-left border-left-0">
+											<%= i++ %>
+										</td>
+										<td class="align-middle text-left border-left-0">
+											<%= one.pro_title %>
+										</td>
+										<!-- Quantity -->
+										<td class="align-middle quantityInPopUp"></td>
+										<!-- Price -->
+										<td class="align-middle"><span>$</span><span class="priceInPopUP">
+												<%=one.s_price%>
+											</span></td>
+									</tr>
+									<% } %>
+						</tbody>
+					</table>
+				</div>
+				<p class="m-auto text-center m-auto" id="custom_message">Shipping Address: <span
+						class="text-primary font-weight-bold">Default.</span> You can change it from your dashboard!</p>
+
+				<div class="modal-footer d-flex justify-content-between bg-light" style="position: sticky; bottom: 0;">
+					<div class="d-flex justify-content-between mt-2">
+						<h5 class="font-weight-bold">Total: &nbsp;</h5>
+						<h5 class="font-weight-bold"><span>$</span><span id="overAllTotalPopUp">0</span></h5>
+					</div>
+					<div>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal"
+							id="cancelBtn">Cancel</button>
+						<button type="button" class="btn btn-primary" id="payNow">Pay Now</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal End -->
+
+	<!-- Modal for empty cart -->
+	<div class="modal fade in" id="modalForEmptyCart" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true"
+		data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header bg-primary text-light">
+					<h5 class="m-auto modal-title" id="modalLabel">Cart Is Empty!</h5>
+				</div>
+
+				<div class="modal-footer d-flex justify-content-center bg-light" style="position: sticky; bottom: 0;">
+
+					<div>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal"
+							id="cancelBtn">Close</button>
+						<a href="http://localhost:3000/shop" class="btn btn-primary" id="payNow">Go to shop</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end of Modal for null cart -->
+
+
+	<script>
+		// Total Value
+		const proceedToCheckoutBtn = document.getElementById("proceedToCheckoutBtn");
+		proceedToCheckoutBtn.addEventListener("click", () => {
+
+			document.getElementById("overAllTotalPopUp").innerText = document.getElementById("overAllTotal").innerText;
+
+			// Quantity
+			const productQuantityValue = document.getElementsByClassName("productQuantityValue");
+			const quantityInPopUp = document.getElementsByClassName("quantityInPopUp");
+
+			let quantity = [];
+			Array.from(productQuantityValue).forEach(ele => {
+				quantity.push(ele.value);
+			});
+
+			Array.from(quantityInPopUp).forEach((ele, ind) => {
+				ele.innerText = quantity[ind];
+			});
+
+			// Price
+			const singleProTotal = document.getElementsByClassName("singleProTotal");
+			const priceInPopUP = document.getElementsByClassName("priceInPopUP");
+
+			let priceArr = [];
+			Array.from(singleProTotal).forEach(ele => {
+				priceArr.push(ele.innerText);
+			});
+
+			Array.from(priceInPopUP).forEach((ele, ind) => {
+				ele.innerText = priceArr[ind];
+			});
+
+		});
+
+	</script>
 
 
 	<%- include("./partials/footer") %>

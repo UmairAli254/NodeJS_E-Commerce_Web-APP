@@ -10,9 +10,11 @@
       <div class="card-body text-center">
        <img src="/img/product_imgs/<%= data.profile_img %>" alt="avatar" class="rounded-circle img-fluid"
         style="width: 150px;">
-       <h5 class="my-3"><u><%= data.name %></u></h5>
-       <p class="text-muted mb-1">E-Shopper</p>
-       <p class="text-muted mb-4">Best eCommerce Platform</p>
+       <h5 class="my-3"><u>
+         <%= data.name %>
+        </u></h5>
+       <p class="text-muted mb-1">Your shipping address is:</p>
+       <p class="text-muted mb-4">"<%= data.address %>"</p>
        <div class="d-flex justify-content-center mb-2">
 
         <a class="btn btn-outline-primary ms-1" href="http://localhost:3000/shop"> Let's do shopping </a>
@@ -47,15 +49,24 @@
     </div>
     <div class="col-lg-8">
      <div class="card mb-4">
+      <p class="bg-primary text-light text-center text-capitalize p-2">You can change your
+       personal information below!</p>
       <div class="card-body">
        <div class="row">
         <form action="/profile-update" method="post" class="text-center m-auto" enctype="multipart/form-data">
          <div class="input-group mb-3">
           <span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
-          <input type="text" class="form-control" placeholder="Name" name="name" />
+          <input type="text" class="form-control" placeholder="Name" name="name" value="<%= data.name %>" required />
           <span class="input-group-text ml-2" id="basic-addon2"><i class="fas fa-at"></i></span>
-          <input type="email" class="form-control" placeholder="Your Email..." name="email" value="<%= data.email %>" disabled />
+          <input type="email" class="form-control" placeholder="Your Email..." name="email" value="<%= data.email %>"
+           disabled />
          </div>
+         <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1"><i class="fas fa-map"></i></span>
+          <input type="text" class="form-control" placeholder="Your Shipping Address" name="address"
+           value="<%= data.address %>" required />
+         </div>
+
 
          <div class="input-group mb-3 d-flex">
           <label for="formFileDisabled" class="form-label alilgn-middle my-auto"> Profile Photo: </label>
@@ -73,6 +84,7 @@
      </div>
 
     </div>
+   </div>
  </section>
 
  <script>
