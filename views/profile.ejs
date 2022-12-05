@@ -1,105 +1,291 @@
 <%- include("./partials/header", {title: "Profile" }); %>
 
- <section style="background-color: #eee;">
-  <div class="container py-5">
+	<section style="background-color: #eee;">
+		<div class="container py-5">
 
 
-   <div class="row">
-    <div class="col-lg-4">
-     <div class="card mb-4">
-      <div class="card-body text-center">
-       <img src="/img/product_imgs/<%= data.profile_img %>" alt="avatar" class="rounded-circle img-fluid"
-        style="width: 150px;">
-       <h5 class="my-3"><u>
-         <%= data.name %>
-        </u></h5>
-       <p class="text-muted mb-1">Your shipping address is:</p>
-       <p class="text-muted mb-4">"<%= data.address %>"</p>
-       <div class="d-flex justify-content-center mb-2">
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="sticky-top">
+						<div class="card mb-4">
+							<div class="card-body text-center">
+								<img src="/img/product_imgs/<%= data.profile_img %>" alt="avatar"
+									class="rounded-circle img-fluid" style="width: 150px;">
+								<h5 class="my-3"><u>
+										<%= data.name %>
+									</u></h5>
+								<p class="text-muted mb-1">Your shipping address is:</p>
+								<p class="text-muted mb-4">"<%= data.address %>"</p>
+								<div class="d-flex justify-content-center mb-2">
 
-        <a class="btn btn-outline-primary ms-1" href="http://localhost:3000/shop"> Let's do shopping </a>
+									<a class="btn btn-outline-primary ms-1" href="http://localhost:3000/shop"> Let's do
+										shopping </a>
 
-       </div>
-      </div>
-     </div>
-     <div class="card mb-4 mb-lg-0">
-      <div class="card-body p-0">
+								</div>
+							</div>
+						</div>
+						<div class="card mb-4 mb-lg-0">
+							<div class="card-body p-0">
 
-       <ul class="list-group list-group-flush rounded-3">
+								<ul class="list-group list-group-flush rounded-3">
 
-        <li class="list-group-item d-flex justify-content-between align-items-center p-3 user-profile-pages-list"
-         role="button">
-         <i class="fas fa-heart fa-lg text-warning"></i>
-         <a href="http://localhost:3000/favourites" class="stretched-link">
-          <p class="mb-0">Favourites (<span id="userFavVal"></span>)</p>
-         </a>
-        </li>
+									<li class="list-group-item d-flex justify-content-between align-items-center p-3 user-profile-pages-list"
+										role="button">
+										<i class="fas fa-heart fa-lg text-warning"></i>
+										<a href="http://localhost:3000/favourites" class="stretched-link">
+											<p class="mb-0">Favourites (<span id="userFavVal"></span>)</p>
+										</a>
+									</li>
 
-        <li class="list-group-item d-flex justify-content-between align-items-center p-3 user-profile-pages-list"
-         role="button">
-         <i class="fas fa-shopping-cart fa-lg "></i>
-         <a href="http://localhost:3000/cart" class="stretched-link">
-          <p class="mb-0">Cart (<span id="userCartVal"></span>)</p>
-         </a>
-        </li>
+									<li class="list-group-item d-flex justify-content-between align-items-center p-3 user-profile-pages-list"
+										role="button">
+										<i class="fas fa-shopping-cart fa-lg "></i>
+										<a href="http://localhost:3000/cart" class="stretched-link">
+											<p class="mb-0">Cart (<span id="userCartVal"></span>)</p>
+										</a>
+									</li>
 
-       </ul>
-      </div>
-     </div>
-    </div>
-    <div class="col-lg-8">
-     <div class="card mb-4">
-      <p class="bg-primary text-light text-center text-capitalize p-2">You can change your
-       personal information below!</p>
-      <div class="card-body">
-       <div class="row">
-        <form action="/profile-update" method="post" class="text-center m-auto" enctype="multipart/form-data">
-         <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon1"><i class="fas fa-user"></i></span>
-          <input type="text" class="form-control" placeholder="Name" name="name" value="<%= data.name %>" required />
-          <span class="input-group-text ml-2" id="basic-addon2"><i class="fas fa-at"></i></span>
-          <input type="email" class="form-control" placeholder="Your Email..." name="email" value="<%= data.email %>"
-           disabled />
-         </div>
-         <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon1"><i class="fas fa-map"></i></span>
-          <input type="text" class="form-control" placeholder="Your Shipping Address" name="address"
-           value="<%= data.address %>" required />
-         </div>
-
-
-         <div class="input-group mb-3 d-flex">
-          <label for="formFileDisabled" class="form-label alilgn-middle my-auto"> Profile Photo: </label>
-          <input type="file" class="form-control ml-3 bg-secondary" id="userImage" role="button" name="userImage" />
-         </div>
-
-         <button type="submit" class="btn btn-primary mt-3">Update</button>
-        </form>
-       </div>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
 
 
 
-
-      </div>
-     </div>
-
-    </div>
-   </div>
- </section>
-
- <script>
-
-  window.onload = function () {
-
-   setTimeout(() => {
-
-    document.querySelector("#userCartVal").innerText = document.querySelector(".cart_badge").innerText
-    document.querySelector("#userFavVal").innerText = document.querySelector(".fav_badge").innerText;
-   }, 1000);
-
-  }
-
- </script>
+				<div class="col-lg-8">
+					<!-- Button -->
+					<div>
+						<button class="btn btn-primary" data-toggle="collapse" data-target="#orderSummary" role="button"
+							aria-expanded="true" aria-controls="orderSummary">
+							Purchased Items
+						</button>
+						<button class="btn btn-primary" type="button" data-toggle="collapse"
+							data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+							Edit Profile
+						</button>
+					</div>
 
 
- <%- include("./partials/footer") %>
+					<!-- For Second Button / Profile -->
+					<div class="collapse" id="collapseExample">
+						<div class="card card-body">
+							<!-- Profile -->
+							<div class="card mb-4">
+								<p class="bg-primary text-light text-center text-capitalize p-2">You can change your
+									personal information below!</p>
+								<div class="card-body">
+									<div class="row">
+										<form action="/profile-update" method="post" class="text-center m-auto"
+											enctype="multipart/form-data">
+											<div class="input-group mb-3">
+												<span class="input-group-text" id="basic-addon1"><i
+														class="fas fa-user"></i></span>
+												<input type="text" class="form-control" placeholder="Name" name="name"
+													value="<%= data.name %>" required />
+												<span class="input-group-text ml-2" id="basic-addon2"><i
+														class="fas fa-at"></i></span>
+												<input type="email" class="form-control" placeholder="Your Email..."
+													name="email" value="<%= data.email %>" disabled />
+											</div>
+											<div class="input-group mb-3">
+												<span class="input-group-text" id="basic-addon1"><i
+														class="fas fa-map"></i></span>
+												<input type="text" class="form-control"
+													placeholder="Your Shipping Address" name="address"
+													value="<%= data.address %>" required />
+											</div>
+
+
+											<div class="input-group mb-3 d-flex">
+												<label for="formFileDisabled" class="form-label alilgn-middle my-auto">
+													Profile
+													Photo: </label>
+												<input type="file" class="form-control ml-3 bg-secondary" id="userImage"
+													role="button" name="userImage" />
+											</div>
+
+											<button type="submit" class="btn btn-primary mt-3">Update</button>
+										</form>
+									</div>
+								</div>
+							</div>
+							<!-- End Profile -->
+						</div>
+					</div>
+
+
+
+
+					<!-- For Button / Orders -->
+					<div class="show" id="orderSummary">
+						<div class="card card-body">
+							<!-- REcord -->
+							<section class="h-100 gradient-custom w-100">
+								<div class="container py-5 h-100 w-100">
+									<div class="row d-flex justify-content-center align-items-center h-100">
+										<div class="col-lg-12 col-xl-12">
+											<div class="card" style="border-radius: 2px;">
+												<div class="card-header py-2 bg-primary text-center">
+													<p class="mb-0 text-light">All Purchased Items</p>
+												</div>
+												<div class="card-body p-4">
+													<div class="d-flex justify-content-between align-items-center mb-4">
+														<p class="lead fw-normal mb-0" style="color: #a8729a;">Receipt
+														</p>
+														<p class="small text-muted mb-0"> Total
+															spent: &nbsp;<span class="mb-0 ms-2 text-dark">$<span
+																	id="overAllTotalOfPurchased">10000</span></span>
+														</p>
+													</div>
+
+													<div class="card shadow-sm mb-4 bg-secondary sticky-top">
+														<div class="card-body">
+															<div class="row">
+																<div
+																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																	<p class="text-muted mb-0">Product</p>
+																</div>
+																<div
+																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																	<p class="text-muted mb-0">Name</p>
+																</div>
+
+																<div
+																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																	<p class="text-muted mb-0 small">
+																	</p>
+																</div>
+
+																<div
+																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																	<p class="text-muted mb-0 small">Price</p>
+																</div>
+
+
+																<div
+																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																	<p class="text-muted mb-0 small">Qty
+																	</p>
+																</div>
+																<div
+																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																	<p class="text-muted mb-0 small">Total Amount
+																	</p>
+																</div>
+															</div>
+														</div>
+													</div>
+													
+													<% 
+													if(purchased_items.length !== 0){
+													for(let one of purchased_items){ %>
+														<div class="card shadow-0 border mb-4">
+															<div class="card-body">
+																<div class="row">
+																	<div class="col-md-2">
+																		<a
+																			href="http://localhost:3000/product/<%= one.pro_title %>/<%= one.pro_id %>">
+																			<img src="/img/product_imgs/<%= one.pro_img %>"
+																				class="img-fluid" alt="Phone" /> </a>
+																	</div>
+																	<div
+																		class="col-md-2 text-center d-flex justify-content-center align-items-center">
+
+																		<p class="text-muted mb-0">
+																			<a
+																				href="http://localhost:3000/product/<%= one.pro_title %>/<%= one.pro_id %>">
+																				<%= one.pro_title %>
+																			</a>
+																		</p>
+																	</div>
+
+
+																	<div
+																		class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																		<p class="text-muted mb-0 small">
+																		</p>
+																	</div>
+
+																	<div
+																		class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																		<p class="text-muted mb-0 small">$<%=one.s_price
+																				%>
+																		</p>
+																	</div>
+
+																	<div
+																		class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																		<p class="text-muted mb-0 small">Qty:
+																			<%=one.quantity %>
+																		</p>
+																	</div>
+																	<div
+																		class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																		<p class="text-muted mb-0 small">$<span
+																				class="singleProTotalPriceInDashboards"><%=one.total_amount %>
+																			</span>
+																		</p>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<% }
+													} else{%>
+															<p>You haven't purchase any products, yet! <a href="http://localhost:3000/shop">Go to shop</a></p>
+														<% } %>
+
+
+												</div>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
+							<!-- REcord end -->
+						</div>
+					</div>
+
+
+
+
+
+
+
+
+
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script>
+
+		window.onload = function () {
+
+			setTimeout(() => {
+
+				document.querySelector("#userCartVal").innerText = document.querySelector(".cart_badge").innerText
+				document.querySelector("#userFavVal").innerText = document.querySelector(".fav_badge").innerText;
+			}, 1000);
+		};
+
+
+		// count and show total of all products in over all total section
+		const overAllTotalOfPurchased = document.getElementById("overAllTotalOfPurchased");
+		const singleProTotalPriceInDashboards = document.getElementsByClassName("singleProTotalPriceInDashboards");
+		let over_all_of_allPros = 0;
+
+		Array.from(singleProTotalPriceInDashboards).forEach(ele => {
+			over_all_of_allPros += parseInt(ele.innerText);
+		});
+
+		overAllTotalOfPurchased.innerText = over_all_of_allPros;
+
+
+	</script>
+
+
+	<%- include("./partials/footer") %>

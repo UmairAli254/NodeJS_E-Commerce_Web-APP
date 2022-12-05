@@ -40,9 +40,6 @@ app.get("/", async (req, res) => {
     const all_categories = await CMr.find({}, { category_name: true });
     const products = await prod_Mr.find().sort({ _id: -1 }).limit(8);
 
-    for (let i = 0; i < 5; i++) {
-        console.log(i);
-    }
     res.render("home", {
         categories: all_categories,
         products: products
@@ -151,7 +148,7 @@ app.post("/register", async (req, res) => {
             });
             data.singnUpToken();
             const ret = await data.save();
-            res.redirect("//localhost:3000/register");
+            res.redirect("/register");
 
         } else {
             res.send("Password in not same!");
@@ -181,7 +178,7 @@ app.post("/login", async (req, res) => {
             const loginToken = await data.genLoginToken();
             res.cookie("eShopperLoginToken", loginToken);
             // res.status(200).send(req.body);
-            res.redirect("http://localhost:3000/profile");
+            res.redirect("/profile");
         } else
             res.status(500).send("Password is wrong");
 
@@ -194,19 +191,21 @@ app.post("/login", async (req, res) => {
 app.get("/profile", async (req, res) => {
     try {
         const all_categories = await CMr.find({}, { category_name: true });
+
         const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
 
+        const purchased_items = await sold_Mr.find({ user_email: isVerified });
         const data = await UMr.findOne({ email: isVerified });
 
         if (isVerified) {
             res.render("profile", {
                 categories: all_categories,
-                data
+                data, purchased_items
             });
         } else
-            res.redirect("//localhost:3000/login");
+            res.redirect("/login");
     } catch {
-        res.redirect("//localhost:3000/login");
+        res.redirect("/login");
     }
 
 });
@@ -242,7 +241,7 @@ app.post("/profile-update", user_profile_upload.single("userImage"), async (req,
                 address: req.body.address
             }
         });
-        res.redirect("http://localhost:3000/profile");
+        res.redirect("/profile");
     } else {
         await UMr.updateOne({ email: isVerified }, {
             $set: {
@@ -251,16 +250,16 @@ app.post("/profile-update", user_profile_upload.single("userImage"), async (req,
                 profile_img: req.file.filename
             }
         });
-        res.redirect("http://localhost:3000/profile");
+        res.redirect("/profile");
     }
 
-    // res.redirect("http://localhost:3000/profile");
+    // res.redirect("/profile");
 })
 
 
 app.get("/logout", (req, res) => {
     res.clearCookie("eShopperLoginToken");
-    res.redirect("//localhost:3000/login");
+    res.redirect("/login");
 });
 
 // End User Account
@@ -285,18 +284,23 @@ app.get("/checkout", async (req, res) => {
 // Cart Page
 app.get("/cart", async (req, res) => {
     try {
+
         const all_categories = await CMr.find({}, { category_name: true });
         const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
 
         const data = await cart_pro_Mr.find({ user_email: isVerified });
 
-        res.render("cart", {
-            categories: all_categories,
-            products: data
-        });
+        if (isVerified) {
+            res.render("cart", {
+                categories: all_categories,
+                products: data
+            });
+        } else
+            res.redirect("/login");
+
 
     } catch (err) {
-        res.status(500).send(err);
+        res.redirect("/login");
     }
 
 });
@@ -349,7 +353,7 @@ app.get("/get-cart-products", async (req, res) => {
 // Remove product from cart
 app.get("/remove-pro-from-cart/:id", async (req, res) => {
     const data = await cart_pro_Mr.findByIdAndDelete(req.params.id);
-    res.redirect("http://localhost:3000/cart");
+    res.redirect("/cart");
 });
 
 
@@ -361,13 +365,17 @@ app.get("/favourites", async (req, res) => {
 
         const data = await fav_pro_Mr.find({ user_email: isVerified });
 
-        res.render("favourite", {
-            categories: all_categories,
-            products: data
-        });
+        if (isVerified) {
+            res.render("favourite", {
+                categories: all_categories,
+                products: data
+            });
+        } else
+            res.redirect("/login");
 
     } catch (err) {
-        res.status(500).send(err);
+        res.redirect("/login");
+
     }
 
 });
@@ -403,7 +411,7 @@ app.get("/get-fav-products", async (req, res) => {
 // Remove product from Favourite
 app.get("/remove-pro-from-fav/:id", async (req, res) => {
     await fav_pro_Mr.findByIdAndDelete(req.params.id);
-    res.redirect("http://localhost:3000/favourites");
+    res.redirect("/favourites");
 });
 
 // Store the sold products to database
@@ -552,7 +560,7 @@ app.post("/admin/posts/new/publish", async (req, res) => {
     try {
         const data = await new PMr(req.body);
         const ret = await data.save();
-        res.redirect("http://localhost:3000/admin/posts/new");
+        res.redirect("/admin/posts/new");
     } catch (err) {
         res.status(500).send(err);
     }
@@ -571,7 +579,7 @@ app.get("/admin/posts/edit/:id", async (req, res) => {
 app.post("/admin/posts/update/:id", async (req, res) => {
     try {
         await PMr.findByIdAndUpdate(req.params.id, req.body);
-        res.redirect("//localhost:3000/admin/posts");
+        res.redirect("/admin/posts");
     } catch (err) {
         // console.log(err);
         res.status(500).send(err);
@@ -581,7 +589,7 @@ app.post("/admin/posts/update/:id", async (req, res) => {
 app.get("/admin/posts/delete/:id", async (req, res) => {
     try {
         await PMr.findByIdAndDelete(req.params.id);
-        res.redirect("//localhost:3000/admin/posts");
+        res.redirect("/admin/posts");
     } catch (err) {
         // console.log(err);
         res.status(500).send(err);
@@ -594,7 +602,7 @@ app.post("/admin/categories/new/publish", async (req, res) => {
     try {
         const data = await new CMr(req.body);
         await data.save();
-        res.redirect("//localhost:3000/admin/categories");
+        res.redirect("/admin/categories");
     } catch (err) {
         res.status(500).send(err);
     }
@@ -604,7 +612,7 @@ app.post("/admin/categories/new/publish", async (req, res) => {
 app.get("/admin/categories/update/:id/:cat_name", async (req, res) => {
     try {
         await CMr.findByIdAndUpdate(req.params.id, { category_name: req.params.cat_name });
-        res.redirect("//localhost:3000/admin/categories");
+        res.redirect("/admin/categories");
     } catch (err) {
         // console.log(err);
         res.status(500).send(err);
@@ -614,7 +622,7 @@ app.get("/admin/categories/update/:id/:cat_name", async (req, res) => {
 app.get("/admin/categories/delete/:id", async (req, res) => {
     try {
         await CMr.findByIdAndDelete(req.params.id);
-        res.redirect("//localhost:3000/admin/categories");
+        res.redirect("/admin/categories");
     } catch (err) {
         // console.log(err);
         res.status(500).send(err);
@@ -666,7 +674,7 @@ app.post("/admin/products/new", multipleUpload, async (req, res) => {
         });
         await data.save();
 
-        res.redirect("http://localhost:3000/admin/products/");
+        res.redirect("/admin/products/");
     } catch (err) {
         res.status(500).send(err);
     }
@@ -737,7 +745,7 @@ app.post("/admin/product/update/:id", multipleUpload, async (req, res) => {
             });
         }
 
-        res.redirect("http://localhost:3000/admin/products/");
+        res.redirect("/admin/products/");
 
     } catch (err) {
         // console.log(err);
@@ -750,7 +758,7 @@ app.post("/admin/product/update/:id", multipleUpload, async (req, res) => {
 app.get("/admin/products/delete/:id", async (req, res) => {
     try {
         await prod_Mr.findByIdAndDelete(req.params.id);
-        res.redirect("http://localhost:3000/admin/products/");
+        res.redirect("/admin/products/");
     } catch (err) {
         res.status(500).send(err);
     }
