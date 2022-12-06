@@ -101,11 +101,13 @@ a.forEach((ele, ind) => {
 // Update delivery status
 function updateDeliveryStatusFun() {
     const deliveryToggle = document.getElementsByClassName("deliveryToggle");
+    let alertBar = document.getElementById("alertBar");
 
     Array.from(deliveryToggle).forEach((ele, ind) => {
         ele.addEventListener("click", async (e) => {
+            let product_title = ele.parentElement.parentElement.parentElement.firstElementChild.nextElementSibling.nextElementSibling.innerText;
             if (e.target.hasAttribute("checked")) {
-               await fetch(`http://localhost:3000/admin/sold-delivery-update/${e.target.id}`, {
+                await fetch(`http://localhost:3000/admin/sold-delivery-update/${e.target.id}`, {
                     method: "POST",
                     headers: { "content-type": "application/json" },
                     body: JSON.stringify({
@@ -113,6 +115,13 @@ function updateDeliveryStatusFun() {
                     })
                 });
                 e.target.removeAttribute("checked", "");
+                alertBar.innerHTML = `<div class="alert alert-warning fade show w-50 m-auto alert-dismissible" role="alert">
+                <strong>Not Delivered!</strong> This Product '${product_title}' is marked as not delivered 
+                <button type="button" class="btn-close p-0 me-3 bg-transparent" data-bs-dismiss="alert" aria-label="Close" style="margin-top: 1.3rem"></button>
+                </div>`;
+                setTimeout(() => {
+                    alertBar.innerHTML = "";
+                }, 3000);
             } else {
                 await fetch(`http://localhost:3000/admin/sold-delivery-update/${e.target.id}`, {
                     method: "POST",
@@ -122,7 +131,13 @@ function updateDeliveryStatusFun() {
                     })
                 });
                 e.target.setAttribute("checked", "");
-
+                alertBar.innerHTML = `<div class="alert alert-success fade show w-50 m-auto alert-dismissible" role="alert">
+                <strong>Delivered!</strong> This Product '${product_title}' is marked as delivered  
+                <button type="button" class="btn-close p-0 me-3 bg-transparent" data-bs-dismiss="alert" aria-label="Close" style="margin-top: 1.3rem"></button>
+                </div>`;
+                setTimeout(() => {
+                    alertBar.innerHTML = "";
+                }, 3000);
             }
         })
     });

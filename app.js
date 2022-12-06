@@ -258,8 +258,17 @@ app.post("/profile-update", user_profile_upload.single("userImage"), async (req,
 
 
 app.get("/logout", (req, res) => {
-    res.clearCookie("eShopperLoginToken");
-    res.redirect("/login");
+    try {
+
+        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+        if (isVerified) {
+
+            res.clearCookie("eShopperLoginToken");
+            res.redirect("/login");
+        }
+    } catch {
+        res.redirect("/login");
+    }
 });
 
 // End User Account
@@ -519,59 +528,108 @@ app.get("/admin-login", (req, res) => {
     res.render("admin/login");
 });
 
+app.post("/admin-login", async (req, res) => {
+    try {
+        const email = req.body.email;
+        const pass = req.body.pass;
+        const data = await AMr.findOne({ email });
+        const isMatch = data.pass === pass;
+
+        if (isMatch) {
+            const loginToken = jwt.sign(email, process.env.SECRET_KEY);
+            res.cookie("adminLoginToken", loginToken);
+            res.redirect("/admin/dashboard");
+        } else
+            res.status(500).send("Password is wrong");
+
+    } catch {
+        res.send("Email Not Found!");
+    }
+});
+
+app.get("/admin-login", (req, res) => {
+    res.render("admin/login");
+});
+
+
 app.get("/admin/dashboard", async (req, res) => {
-    const posts = await PMr.find();
-    const products = await prod_Mr.find();
-    const sold_products = await sold_Mr.find().sort({_id: -1});
-    const registered_users = await UMr.find();
-    res.render("admin/dashboard", {
-        posts, products, sold_products, registered_users
-    });
+    try {
+        const posts = await PMr.find();
+        const products = await prod_Mr.find();
+        const sold_products = await sold_Mr.find().sort({ _id: -1 });
+        const registered_users = await UMr.find();
+
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            res.render("admin/dashboard", {
+                posts, products, sold_products, registered_users
+            });
+        }
+    } catch {
+        res.redirect("/admin-login");
+    }
 });
 
 app.get("/admin/posts", async (req, res) => {
     try {
         const data = await PMr.find();
-        res.render("admin/all_posts/all_posts", {
-            data: data
-        });
+
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified)
+            res.render("admin/all_posts/all_posts", {
+                data: data
+            });
     } catch (err) {
-        res.status(501).end(err);
+        res.redirect("/admin-login");
     }
 });
 
 app.get("/admin/categories", async (req, res) => {
     try {
         const data = await CMr.find();
-        res.render("admin/categories/categories", {
-            data: data
-        });
+
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified)
+            res.render("admin/categories/categories", {
+                data: data
+            });
     } catch (err) {
-        res.status(501).end(err);
+        res.redirect("/admin-login");
     }
 });
 
 app.get("/admin/registered-users", async (req, res) => {
     try {
-        const data = await UMr.find();
-        res.render("admin/registered_users", {
-            data: data
-        });
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            const data = await UMr.find();
+            res.render("admin/registered_users", {
+                data: data
+            });
+        }
     } catch (err) {
-        res.status(501).end(err);
+        res.redirect("/admin-login");
     }
 });
 
 app.get("/admin/sold-products", async (req, res) => {
     try {
-        const data = await sold_Mr.find().sort({_id: -1});
-        const registered_users = await UMr.find();
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
 
-        res.render("admin/sold_products", {
-            data, registered_users
-        });
+        if (isVerified) {
+            const data = await sold_Mr.find().sort({ _id: -1 });
+            const registered_users = await UMr.find();
+
+            res.render("admin/sold_products", {
+                data, registered_users
+            });
+        }
     } catch (err) {
-        res.status(501).end(err);
+        res.redirect("/admin-login");
     }
 });
 
@@ -590,7 +648,16 @@ app.post("/admin/sold-delivery-update/:id", async (req, res) => {
 
 
 app.get("/admin/logout", (req, res) => {
-    res.render("logout");
+    try {
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            res.clearCookie("adminLoginToken");
+            res.redirect("/admin-login");
+        }
+    } catch {
+        res.redirect("/admin-login");
+    }
 })
 
 // Sub Routes
@@ -610,32 +677,51 @@ app.post("/admin/posts/new/publish", async (req, res) => {
 })
 // Edit Post
 app.get("/admin/posts/edit/:id", async (req, res) => {
-    const data = await PMr.findOne({ _id: req.params.id });
-    res.render("admin/all_posts/edit_post", {
-        id: data._id,
-        title: data.title,
-        content: data.description
-    });
+
+    try {
+        const data = await PMr.findOne({ _id: req.params.id });
+
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified)
+            res.render("admin/all_posts/edit_post", {
+                id: data._id,
+                title: data.title,
+                content: data.description
+            });
+    } catch {
+        res.redirect("/admin-login");
+    }
 })
 
 // Update post when submit the form
 app.post("/admin/posts/update/:id", async (req, res) => {
     try {
-        await PMr.findByIdAndUpdate(req.params.id, req.body);
-        res.redirect("/admin/posts");
+
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            await PMr.findByIdAndUpdate(req.params.id, req.body);
+            res.redirect("/admin/posts");
+        }
     } catch (err) {
-        // console.log(err);
-        res.status(500).send(err);
+        res.redirect("/admin-login");
     }
 });
 // Delete post
 app.get("/admin/posts/delete/:id", async (req, res) => {
     try {
-        await PMr.findByIdAndDelete(req.params.id);
-        res.redirect("/admin/posts");
+
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+
+            await PMr.findByIdAndDelete(req.params.id);
+
+            res.redirect("/admin/posts");
+        }
     } catch (err) {
-        // console.log(err);
-        res.status(500).send(err);
+        res.redirect("/admin-login");
     }
 });
 
@@ -643,44 +729,65 @@ app.get("/admin/posts/delete/:id", async (req, res) => {
 // Categories Routes 
 app.post("/admin/categories/new/publish", async (req, res) => {
     try {
-        const data = await new CMr(req.body);
-        await data.save();
-        res.redirect("/admin/categories");
+
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            const data = await new CMr(req.body);
+            await data.save();
+
+            res.redirect("/admin/categories");
+        }
     } catch (err) {
-        res.status(500).send(err);
+        res.redirect("/admin-login");
     }
 
 });
 // Edit Category
 app.get("/admin/categories/update/:id/:cat_name", async (req, res) => {
     try {
-        await CMr.findByIdAndUpdate(req.params.id, { category_name: req.params.cat_name });
-        res.redirect("/admin/categories");
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            await CMr.findByIdAndUpdate(req.params.id, { category_name: req.params.cat_name });
+            res.redirect("/admin/categories");
+        }
     } catch (err) {
-        // console.log(err);
-        res.status(500).send(err);
+        res.redirect("/admin-login");
     }
 });
 // Delete Category
 app.get("/admin/categories/delete/:id", async (req, res) => {
     try {
-        await CMr.findByIdAndDelete(req.params.id);
-        res.redirect("/admin/categories");
+
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            await CMr.findByIdAndDelete(req.params.id);
+            res.redirect("/admin/categories");
+        }
     } catch (err) {
-        // console.log(err);
-        res.status(500).send(err);
+        res.redirect("/admin-login");
     }
 });
 
 // Admin Product Pages
 app.get("/admin/products", async (req, res) => {
-    const data = await prod_Mr.find();
-    const categories = await CMr.find({}, { category_name: true, _id: 0 });
+    try {
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
 
-    res.render("admin/products/products", {
-        data: data,
-        categories: categories
-    });
+        if (isVerified) {
+            const data = await prod_Mr.find().sort({_id: -1});
+            const categories = await CMr.find({}, { category_name: true, _id: 0 });
+
+            res.render("admin/products/products", {
+                data: data,
+                categories: categories
+            });
+        }
+    } catch {
+        res.redirect("/admin-login");
+    }
 });
 
 // Multer 
@@ -699,27 +806,32 @@ const multipleUpload = upload.fields([{ name: "primary_img", maxCount: 1 }, { na
 app.post("/admin/products/new", multipleUpload, async (req, res) => {
     try {
 
-        // req.files will return an array that will contain two objects, 1st will be of the first file field and 2nd one will be second file field of the form and then we have to get the values from that object of arrays
-        const all_imgs_by_user = req.files.all_imgs || [];
-        const gallery = new Array();
-        all_imgs_by_user.forEach((ele, ind) => {
-            gallery[ind] = req.files.all_imgs[ind].filename;
-        });
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
 
-        const data = await prod_Mr({
-            title: req.body.title,
-            category: req.body.category,
-            description: req.body.description,
-            price: req.body.price,
-            s_price: req.body.s_price,
-            primary_img: req.files.primary_img[0].filename,
-            all_imgs: gallery
-        });
-        await data.save();
+        if (isVerified) {
+            // req.files will return an array that will contain two objects, 1st will be of the first file field and 2nd one will be second file field of the form and then we have to get the values from that object of arrays
+            const all_imgs_by_user = req.files.all_imgs || [];
+            const gallery = new Array();
+            all_imgs_by_user.forEach((ele, ind) => {
+                gallery[ind] = req.files.all_imgs[ind].filename;
+            });
 
-        res.redirect("/admin/products/");
+            const data = await prod_Mr({
+                title: req.body.title,
+                category: req.body.category,
+                description: req.body.description,
+                price: req.body.price,
+                s_price: req.body.s_price,
+                primary_img: req.files.primary_img[0].filename,
+                all_imgs: gallery
+            });
+            await data.save();
+
+            res.redirect("/admin/products/");
+        }
     } catch (err) {
-        res.status(500).send(err);
+        res.redirect("/admin-login");
+
     }
 });
 
@@ -736,63 +848,66 @@ app.get("/admin/products/data-for-update/:id", async (req, res) => {
 // Update Product after hitting the Form Update Button
 app.post("/admin/product/update/:id", multipleUpload, async (req, res) => {
     try {
-        const all_imgs_by_user = req.files.all_imgs || [];
-        const gallery = new Array();
-        all_imgs_by_user.forEach((ele, ind) => {
-            gallery[ind] = req.files.all_imgs[ind].filename;
-        });
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
 
-        let primary_image
-        try {
-            primary_image = req.files.primary_img[0].filename;
-        } catch {
-            primary_image = "";
+        if (isVerified) {
+            const all_imgs_by_user = req.files.all_imgs || [];
+            const gallery = new Array();
+            all_imgs_by_user.forEach((ele, ind) => {
+                gallery[ind] = req.files.all_imgs[ind].filename;
+            });
+
+            let primary_image
+            try {
+                primary_image = req.files.primary_img[0].filename;
+            } catch {
+                primary_image = "";
+            }
+
+            if (primary_image === "" && gallery.length !== 0) {
+                await prod_Mr.findByIdAndUpdate(req.params.id, {
+                    title: req.body.title,
+                    category: req.body.category,
+                    description: req.body.description,
+                    price: req.body.price,
+                    s_price: req.body.s_price,
+                    all_imgs: gallery
+                });
+            } else if (primary_image !== "" && gallery.length === 0) {
+                await prod_Mr.findByIdAndUpdate(req.params.id, {
+                    title: req.body.title,
+                    category: req.body.category,
+                    description: req.body.description,
+                    price: req.body.price,
+                    s_price: req.body.s_price,
+                    primary_img: primary_image,
+                });
+            } else if (primary_image === "" && gallery.length === 0) {
+                await prod_Mr.findByIdAndUpdate(req.params.id, {
+                    title: req.body.title,
+                    category: req.body.category,
+                    description: req.body.description,
+                    price: req.body.price,
+                    s_price: req.body.s_price,
+                });
+            } else {
+                await prod_Mr.findByIdAndUpdate(req.params.id, {
+                    title: req.body.title,
+                    category: req.body.category,
+                    description: req.body.description,
+                    price: req.body.price,
+                    s_price: req.body.s_price,
+                    primary_img: primary_image,
+                    all_imgs: gallery
+
+                });
+            }
+
+            res.redirect("/admin/products/");
         }
-
-        if (primary_image === "" && gallery.length !== 0) {
-            await prod_Mr.findByIdAndUpdate(req.params.id, {
-                title: req.body.title,
-                category: req.body.category,
-                description: req.body.description,
-                price: req.body.price,
-                s_price: req.body.s_price,
-                all_imgs: gallery
-            });
-        } else if (primary_image !== "" && gallery.length === 0) {
-            await prod_Mr.findByIdAndUpdate(req.params.id, {
-                title: req.body.title,
-                category: req.body.category,
-                description: req.body.description,
-                price: req.body.price,
-                s_price: req.body.s_price,
-                primary_img: primary_image,
-            });
-        } else if (primary_image === "" && gallery.length === 0) {
-            await prod_Mr.findByIdAndUpdate(req.params.id, {
-                title: req.body.title,
-                category: req.body.category,
-                description: req.body.description,
-                price: req.body.price,
-                s_price: req.body.s_price,
-            });
-        } else {
-            await prod_Mr.findByIdAndUpdate(req.params.id, {
-                title: req.body.title,
-                category: req.body.category,
-                description: req.body.description,
-                price: req.body.price,
-                s_price: req.body.s_price,
-                primary_img: primary_image,
-                all_imgs: gallery
-
-            });
-        }
-
-        res.redirect("/admin/products/");
 
     } catch (err) {
-        // console.log(err);
-        res.status(500).send(err);
+        res.redirect("/admin-login");
     }
 });
 
@@ -800,10 +915,14 @@ app.post("/admin/product/update/:id", multipleUpload, async (req, res) => {
 // Delete Product
 app.get("/admin/products/delete/:id", async (req, res) => {
     try {
-        await prod_Mr.findByIdAndDelete(req.params.id);
-        res.redirect("/admin/products/");
+        const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
+
+        if (isVerified) {
+            await prod_Mr.findByIdAndDelete(req.params.id);
+            res.redirect("/admin/products/");
+        }
     } catch (err) {
-        res.status(500).send(err);
+        res.redirect("/admin-login");
     }
 });
 
@@ -815,18 +934,6 @@ app.get("/admin/products/delete/:id", async (req, res) => {
 
 
 
-
-// Admin Login
-
-// Verify Login Data
-app.post("/admin-login", async (req, res) => {
-    try {
-        const data = await AMr.findOne();
-        res.status(200).send(data);
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});
 
 
 
