@@ -97,3 +97,35 @@ a.forEach((ele, ind) => {
 });
 
 
+
+// Update delivery status
+function updateDeliveryStatusFun() {
+    const deliveryToggle = document.getElementsByClassName("deliveryToggle");
+
+    Array.from(deliveryToggle).forEach((ele, ind) => {
+        ele.addEventListener("click", async (e) => {
+            if (e.target.hasAttribute("checked")) {
+               await fetch(`http://localhost:3000/admin/sold-delivery-update/${e.target.id}`, {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                        delivered: false
+                    })
+                });
+                e.target.removeAttribute("checked", "");
+            } else {
+                await fetch(`http://localhost:3000/admin/sold-delivery-update/${e.target.id}`, {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                        delivered: true
+                    })
+                });
+                e.target.setAttribute("checked", "");
+
+            }
+        })
+    });
+
+}
+updateDeliveryStatusFun();

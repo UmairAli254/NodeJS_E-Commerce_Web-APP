@@ -153,12 +153,6 @@
 
 																<div
 																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
-																	<p class="text-muted mb-0 small">
-																	</p>
-																</div>
-
-																<div
-																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
 																	<p class="text-muted mb-0 small">Price</p>
 																</div>
 
@@ -170,9 +164,15 @@
 																</div>
 																<div
 																	class="col-md-2 text-center d-flex justify-content-center align-items-center">
-																	<p class="text-muted mb-0 small">Total Amount
+																	<p class="text-muted mb-0 small">Total
 																	</p>
 																</div>
+																
+																<div
+																class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																<p class="text-muted mb-0 small">Delivered</p>
+															</div>
+
 															</div>
 														</div>
 													</div>
@@ -201,12 +201,7 @@
 																	</div>
 
 
-																	<div
-																		class="col-md-2 text-center d-flex justify-content-center align-items-center">
-																		<p class="text-muted mb-0 small">
-																		</p>
-																	</div>
-
+								
 																	<div
 																		class="col-md-2 text-center d-flex justify-content-center align-items-center">
 																		<p class="text-muted mb-0 small">$<%=one.s_price
@@ -227,6 +222,18 @@
 																			</span>
 																		</p>
 																	</div>
+
+																	<div
+																		class="col-md-2 text-center d-flex justify-content-center align-items-center">
+																		<p class="text-muted mb-0 small">
+																		<% if(one.delivered){ %>
+																				<span class="text-success">Yes</span>
+																		<% } else{%>
+																			<span class="text-danger">Not Yet</span>
+																			<% } %>
+																			</p>
+																	</div>
+
 																</div>
 															</div>
 														</div>

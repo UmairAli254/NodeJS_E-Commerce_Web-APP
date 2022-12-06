@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 require("./model/connection");
-// const AMr = require("./model/admin");
+const AMr = require("./model/admin");
 const PMr = require("./model/posts");
 const CMr = require("./model/categories");
 const prod_Mr = require("./model/products");
@@ -522,7 +522,7 @@ app.get("/admin-login", (req, res) => {
 app.get("/admin/dashboard", async (req, res) => {
     const posts = await PMr.find();
     const products = await prod_Mr.find();
-    const sold_products = await sold_Mr.find();
+    const sold_products = await sold_Mr.find().sort({_id: -1});
     const registered_users = await UMr.find();
     res.render("admin/dashboard", {
         posts, products, sold_products, registered_users
@@ -564,10 +564,25 @@ app.get("/admin/registered-users", async (req, res) => {
 
 app.get("/admin/sold-products", async (req, res) => {
     try {
-        const data = await sold_Mr.find();
+        const data = await sold_Mr.find().sort({_id: -1});
+        const registered_users = await UMr.find();
+
         res.render("admin/sold_products", {
-            data: data
+            data, registered_users
         });
+    } catch (err) {
+        res.status(501).end(err);
+    }
+});
+
+// Delivery Status Update APIs
+// Update delivery status API upon click on the toggle
+app.post("/admin/sold-delivery-update/:id", async (req, res) => {
+    try {
+        const data = await sold_Mr.findByIdAndUpdate(req.params.id, req.body, {
+            new: true
+        });
+        res.status(201).send(data);
     } catch (err) {
         res.status(501).end(err);
     }
@@ -801,17 +816,17 @@ app.get("/admin/products/delete/:id", async (req, res) => {
 
 
 
-// Admin Post Routes
+// Admin Login
 
 // Verify Login Data
-// app.post("/admin-login", async (req, res) => {
-//     try {
-//         const data = await AMr.findOne();
-//         res.status(200).send(data);
-//     } catch (err) {
-//         res.status(500).send(err);
-//     }
-// });
+app.post("/admin-login", async (req, res) => {
+    try {
+        const data = await AMr.findOne();
+        res.status(200).send(data);
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
 
 
 

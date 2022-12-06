@@ -42,17 +42,22 @@ header h1 {
     color: #fff;
     background-color: #1BA1E2;
     padding: 20px;
-  }
-  
-  article {
+}
+
+article {
     width: 80%;
     margin: auto;
     margin-top: 10px;
-  }
-  
-  .thumbnail {
+}
+
+.thumbnail {
     height: 100px;
     margin: 10px;
-  }
+}
 
-
+/* Delivery Toggle */
+/* .deliveryToggle{
+    background-color: #956366;
+    border-color: #956366;
+    cursor: pointer; */
+/* } */

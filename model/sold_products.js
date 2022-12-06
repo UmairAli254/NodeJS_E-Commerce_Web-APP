@@ -14,6 +14,10 @@ const Sr = new mongoose.Schema({
  date: {
   type: Date,
   default: Date.now
+ },
+ delivered: {
+  type: Boolean,
+  default: false
  }
 });
 
