@@ -419,7 +419,7 @@ function live_search_engine_fun() {
 	searchBar.addEventListener("blur", (e) => {
 		setTimeout(() => {
 			searchUL.innerHTML = "";
-		}, 150);
+		}, 200);
 	});
 
 

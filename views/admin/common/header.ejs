@@ -2,91 +2,92 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <!-- Favicon -->
-    <link href="/img/favicon.png" rel="icon">
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/admin/style.css">
-    <!-- <link rel="stylesheet" href="/css/style.css"> -->
-    <title>
-        <%= title %>
-    </title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- CSS only -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	<!-- Favicon -->
+	<link href="/img/favicon.png" rel="icon">
+	<!-- Font Awesome -->
+	<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet"> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="/admin/style.css">
+	<!-- <link rel="stylesheet" href="/css/style.css"> -->
+	<title>
+		<%= title %>
+	</title>
 
 
-    <style>
-        .dashboardPanel .nav-link {
-            background-color: white !important;
-            color: #956366 !important;
-            margin-top: 5px
-        }
+	<style>
+		.dashboardPanel .nav-link {
+			background-color: white !important;
+			color: #956366 !important;
+			margin-top: 5px
+		}
 
-        .dashboardPanel .nav-link:hover {
-            margin-top: 13px !important;
-            margin-bottom: 13px !important;
-            transition: margin ease-in-out 0.3s;
-        }
-    </style>
+		.dashboardPanel .nav-link:hover {
+			margin-top: 13px !important;
+			margin-bottom: 13px !important;
+			transition: margin ease-in-out 0.3s;
+		}
+	</style>
 </head>
 
 <body>
 
-    <!-- Sidebar -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-3">
+	<!-- Sidebar -->
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-3">
 
-                <div class="d-flex flex-column flex-shrink-0 shadow w-75 sticky-top"
-                    style="height: 100vh; margin-left: -13px !important; background-color:#956366; color: white;">
-                    <a href="/admin/dashboard"
-                        class="d-flex align-items-center pb-0 pt-3 pb-md-0 me-md-auto text-decoration-none ms-auto">
-                        <span class="fs-4 link-light">Admin Panel</span>
-                    </a>
-                    <hr>
-                    <ul class="nav nav-pills flex-column mb-auto p-3 dashboardPanel">
-                        <li class="nav-item">
-                            <a href="/admin/dashboard" class="nav-link link-light " aria-current="page">
-                                Dashboard
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/admin/Posts" class="nav-link link-light ">
-                                Posts
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/admin/categories" class="nav-link link-light ">
-                                Categories
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/admin/products" class="nav-link link-light ">
-                                Products
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/admin/registered-users" class="nav-link link-light ">
-                                Registered Users
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/admin/sold-products" class="nav-link link-light ">
-                                Sold Products
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/admin/logout" class="nav-link link-light ">
-                                Logout
-                            </a>
-                        </li>
-                    </ul>
-                    <br />
-                    <br />
-                    <br />
-                </div>
-            </div> <!-- Col end here -->
+				<div class="d-flex flex-column flex-shrink-0 shadow w-75 sticky-top"
+					style="height: 100vh; margin-left: -13px !important; background-color:#956366; color: white;">
+					<a href="/admin/dashboard"
+						class="d-flex align-items-center pb-0 pt-3 pb-md-0 me-md-auto text-decoration-none ms-auto">
+						<span class="fs-4 link-light">Admin Panel <i class="fa-solid fa-fingerprint ms-1 fs-3"></i></span>
+					</a>
+					<hr>
+					<ul class="nav nav-pills flex-column mb-auto p-3 dashboardPanel">
+						<li class="nav-item">
+							<a href="/admin/dashboard" class="nav-link link-light " aria-current="page"><i class="fa-solid fa-table me-1"></i>
+								Dashboard
+							</a>
+						</li>
+						<li>
+							<a href="/admin/Posts" class="nav-link link-light "><i class="fas fa-paste me-1"></i>
+								Posts
+							</a>
+						</li>
+						<li>
+							<a href="/admin/categories" class="nav-link link-light"><i class="fas fa-cubes-stacked me-1"></i>
+								Categories
+							</a>
+						</li>
+						<li>
+							<a href="/admin/products" class="nav-link link-light "><i class="fas fa-store me-1"></i>
+								Products
+							</a>
+						</li>
+						<li>
+							<a href="/admin/registered-users" class="nav-link link-light "><i class="fas fa-users me-1"></i>
+								Registered Users
+							</a>
+						</li>
+						<li>
+							<a href="/admin/sold-products" class="nav-link link-light "><i class="fab fa-opencart me-1"></i>
+								Sold Products
+							</a>
+						</li>
+						<li>
+							<a href="/admin/logout" class="nav-link link-light "><i class="fas fa-arrow-right-from-bracket me-1"></i>
+								Logout
+							</a>
+						</li>
+					</ul>
+					<br />
+					<br />
+					<br />
+				</div>
+			</div> <!-- Col end here -->
