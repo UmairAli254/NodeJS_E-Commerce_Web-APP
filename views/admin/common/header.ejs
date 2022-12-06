@@ -13,9 +13,25 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/admin/style.css">
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
     <title>
         <%= title %>
     </title>
+
+
+    <style>
+        .dashboardPanel .nav-link {
+            background-color: white !important;
+            color: #956366 !important;
+            margin-top: 5px
+        }
+
+        .dashboardPanel .nav-link:hover {
+            margin-top: 13px !important;
+            margin-bottom: 13px !important;
+            transition: margin ease-in-out 0.3s;
+        }
+    </style>
 </head>
 
 <body>
@@ -25,35 +41,46 @@
         <div class="row">
             <div class="col-3">
 
-                <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
-                    <a href="//localhost:3000/admin/dashboard"
-                        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto  text-decoration-none">
-                        <span class="fs-4 link-dark">Admin Panel</span>
+                <div class="d-flex flex-column flex-shrink-0 shadow w-75 sticky-top"
+                    style="height: 100vh; margin-left: -13px !important; background-color:#956366; color: white;">
+                    <a href="/admin/dashboard"
+                        class="d-flex align-items-center pb-0 pt-3 pb-md-0 me-md-auto text-decoration-none ms-auto">
+                        <span class="fs-4 link-light">Admin Panel</span>
                     </a>
                     <hr>
-                    <ul class="nav nav-pills flex-column mb-auto">
+                    <ul class="nav nav-pills flex-column mb-auto p-3 dashboardPanel">
                         <li class="nav-item">
-                            <a href="//localhost:3000/admin/dashboard" class="nav-link link-dark " aria-current="page">
+                            <a href="/admin/dashboard" class="nav-link link-light " aria-current="page">
                                 Dashboard
                             </a>
                         </li>
                         <li>
-                            <a href="//localhost:3000/admin/Posts" class="nav-link link-dark ">
+                            <a href="/admin/Posts" class="nav-link link-light ">
                                 Posts
                             </a>
                         </li>
                         <li>
-                            <a href="//localhost:3000/admin/categories" class="nav-link link-dark ">
+                            <a href="/admin/categories" class="nav-link link-light ">
                                 Categories
                             </a>
                         </li>
                         <li>
-                            <a href="//localhost:3000/admin/products" class="nav-link link-dark ">
+                            <a href="/admin/products" class="nav-link link-light ">
                                 Products
                             </a>
                         </li>
                         <li>
-                            <a href="//localhost:3000/admin/categories" class="nav-link link-dark ">
+                            <a href="/admin/registered-users" class="nav-link link-light ">
+                                Registered Users
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/sold-products" class="nav-link link-light ">
+                                Sold Products
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/categories" class="nav-link link-light ">
                                 Logout
                             </a>
                         </li>

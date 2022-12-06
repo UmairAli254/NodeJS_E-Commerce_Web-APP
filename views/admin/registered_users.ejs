@@ -1,0 +1,41 @@
+<%- include("./common/header", { title: "Registered Users" }) %>
+
+
+ <div class="col-8 mt-5">
+  <div class="row">
+   <div class="col table-responsive mb-5">
+    <table class="table table-bordered text-center mb-0">
+     <thead class="text-light" style=" background-color: #956366;">
+      <tr>
+       <th style="width:2%;">#</th>
+       <th>Name</th>
+       <th>Email</th>
+       <th>Date</th>
+      </tr>
+     </thead>
+     <tbody class="align-middle">
+      <% let i=1; %>
+       <% for(let one of data) {%>
+        <tr>
+         <td class="align-middle text-left border-left-0">
+          <%= i++ %>
+         </td>
+         <td class="align-middle"><%= one.name %></td>
+         <td class="align-middle"><%= one.email %></td>
+         <td class="align-middle"><%= one.date.toLocaleString() %></td>
+        </tr>
+        <% } %>
+     </tbody>
+    </table>
+   </div>
+
+
+
+
+  </div>
+ </div>
+ </div>
+ </div>
+
+
+ <%- include("./common/footer") %>

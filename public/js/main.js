@@ -219,7 +219,7 @@ function add_to_cart_fun() {
 					let cart_badge = document.querySelector(".cart_badge");
 					cart_badge.innerText = parseInt(cart_badge.innerText) + 1;
 					let alertBar = document.getElementById("alertBar");
-					alertBar.innerHTML = `<div class="alert alert-success fade show w-50 m-auto" role="alert">
+					alertBar.innerHTML = `<div class="alert alert-success fade show w-100" role="alert">
 					<strong>Added!</strong> Product is added to cart! &nbsp; <a href="http://localhost:3000/cart"> Go To Cart </a>
 				</div>`;
 					setTimeout(() => {
@@ -379,7 +379,7 @@ function add_to_fav_fun() {
 					let fav_badge = document.querySelector(".fav_badge");
 					fav_badge.innerText = parseInt(fav_badge.innerText) + 1;
 					let alertBar = document.getElementById("alertBar");
-					alertBar.innerHTML = `<div class="alert alert-warning fade show w-50 m-auto" role="alert">
+					alertBar.innerHTML = `<div class="alert alert-warning fade show w-100" role="alert">
 						<strong>Favourite!</strong> Product is added to your favourite list! &nbsp; <a href="http://localhost:3000/favourites"> Go To Favourite List </a>
 					</div>`;
 					setTimeout(() => {

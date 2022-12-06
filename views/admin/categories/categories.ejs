@@ -11,20 +11,19 @@
 		<div class="row mt-5">
 			<div class="col-4 me-5">
 				<form action="//localhost:3000/admin/categories/new/publish" method="POST">
-					<div class="mb-3">
+					<div class="mb-3 shadow p-3 rounded">
 						<label for="exampleFormControlInput1" class="form-label">Add new category</label>
 						<input type="text" class="form-control" id="exampleFormControlInput1"
 							placeholder="write here..." name="category_name" required>
-					</div>
-					<div class="modal-footer border-0">
-						<button type="submit" class="btn btn-dark"> Publish</button>
-					</div>
+							<div class="modal-footer border-0">
+								<button type="submit" class="btn btn-primary mt-3"> Publish</button>
+							</div>
+						</div>
 				</form>
 			</div>
 			<div class="col-6">
 				<ul class="list-group">
-					<li class="list-group-item d-flex justify-content-between text-light"
-						style="background-color: #322F46">
+					<li class="list-group-item d-flex justify-content-between" style="background-color:#956366; color: white; border-radius: 0;">
 						All categories <span>
 							<%= data.length %>
 						</span>
@@ -34,10 +33,10 @@
 							<%= one.category_name %>
 								<span>
 									<span role="button" class="editBtn" data-bs-toggle="modal"
-										data-bs-target="#editCategoryModal" id="<%=one._id %>" style="color:#956366">
+										data-bs-target="#editCategoryModal" id="<%=one._id %>" >
 										Edit
 									</span>
-									<span class="ms-3 text-danger delButton" role="button" data-bs-toggle="modal"
+									<span class="ms-3 delButton" role="button" data-bs-toggle="modal"
 										data-bs-target="#exampleModal" id="<%=one._id %>">Delete</span>
 								</span>
 

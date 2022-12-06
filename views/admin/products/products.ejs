@@ -3,11 +3,10 @@
 	<div class="col mt-5">
 
 		<!-- Frist Row -->
-		<div class="row">
-			<div class="col-10">
+		<div class="row mb-5">
+			<div class="col-10 shadow p-0 rounded">
 				<ul class="list-group">
-					<li class="list-group-item d-flex justify-content-between text-light"
-						style="background-color: #322F46">
+					<li class="list-group-item d-flex justify-content-between" style="background-color:#956366; color: white; border-radius: 0;">
 						All Products <span>
 							<%= data.length %>
 						</span>
@@ -58,8 +57,8 @@
 
 				<!-- Bootstrap Modals-->
 				<!-- Modal for new product -->
-				<div class="modal fade in modal-lg" id="newproductModal" tabindex="-1" aria-labelledby="modalLabel"
-					aria-hidden="true">
+				<div class="modal fade in modal-lg w-100" id="newproductModal" tabindex="-1" aria-labelledby="modalLabel"
+					aria-hidden="true" style="padding-right: 0">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -258,8 +257,8 @@
 
 			<!-- Add New Product Button Row -->
 			<div class="col-2">
-				<a href="products/new" style="background-color: #956366" class="btn text-light sticky-top"
-					data-bs-toggle="modal" data-bs-target="#newproductModal">New Product</a>
+				<a href="products/new" class="btn sticky-top"
+					data-bs-toggle="modal" data-bs-target="#newproductModal" style="background-color:#956366; color: white; border-radius: 0;">New Product</a>
 			</div>
 		</div>
 

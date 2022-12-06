@@ -194,7 +194,7 @@ app.get("/profile", async (req, res) => {
 
         const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
 
-        const purchased_items = await sold_Mr.find({ user_email: isVerified });
+        const purchased_items = await sold_Mr.find({ user_email: isVerified }).sort({ _id: -1 });
         const data = await UMr.findOne({ email: isVerified });
 
         if (isVerified) {
@@ -519,8 +519,14 @@ app.get("/admin-login", (req, res) => {
     res.render("admin/login");
 });
 
-app.get("/admin/dashboard", (req, res) => {
-    res.render("admin/dashboard");
+app.get("/admin/dashboard", async (req, res) => {
+    const posts = await PMr.find();
+    const products = await prod_Mr.find();
+    const sold_products = await sold_Mr.find();
+    const registered_users = await UMr.find();
+    res.render("admin/dashboard", {
+        posts, products, sold_products, registered_users
+    });
 });
 
 app.get("/admin/posts", async (req, res) => {
@@ -538,6 +544,28 @@ app.get("/admin/categories", async (req, res) => {
     try {
         const data = await CMr.find();
         res.render("admin/categories/categories", {
+            data: data
+        });
+    } catch (err) {
+        res.status(501).end(err);
+    }
+});
+
+app.get("/admin/registered-users", async (req, res) => {
+    try {
+        const data = await UMr.find();
+        res.render("admin/registered_users", {
+            data: data
+        });
+    } catch (err) {
+        res.status(501).end(err);
+    }
+});
+
+app.get("/admin/sold-products", async (req, res) => {
+    try {
+        const data = await sold_Mr.find();
+        res.render("admin/sold_products", {
             data: data
         });
     } catch (err) {
