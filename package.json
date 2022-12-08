@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
     "dev": "nodemon app.js -e ejs,js"
   },
   "keywords": [],
-  "author": "Umair Ali",
+  "author": "Umair Ali", 
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
