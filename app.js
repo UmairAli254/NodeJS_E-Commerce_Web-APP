@@ -498,12 +498,16 @@ app.get("/shop/next-page/:skip", async (req, res) => {
     }
 
 });
+
 // Previous
-app.get("/shop/pre-page/:skip", async (req, res) => {
+app.get("/shop/pre-page/:skip/:last_page_data", async (req, res) => {
     try {
         let skip = req.params.skip * 12;
         // let limit = req.params.limit * 12;
-        const data = await prod_Mr.find().skip(skip).limit(12).sort({ _id: -1 });
+        let previous_last_page_data = req.params.last_page_data;
+        let limit = 12 + parseInt(previous_last_page_data);
+        console.log(limit);
+        const data = await prod_Mr.find().skip(skip).limit(limit).sort({ _id: -1 });
 
         // console.log(data);
         res.status(200).send(data);
@@ -777,7 +781,7 @@ app.get("/admin/products", async (req, res) => {
         const isVerified = jwt.verify(req.cookies.adminLoginToken, process.env.SECRET_KEY);
 
         if (isVerified) {
-            const data = await prod_Mr.find().sort({_id: -1});
+            const data = await prod_Mr.find().sort({ _id: -1 });
             const categories = await CMr.find({}, { category_name: true, _id: 0 });
 
             res.render("admin/products/products", {

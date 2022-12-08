@@ -434,19 +434,19 @@ function live_search_engine_fun() {
 
 		const showResults = () => {
 			searchUL.innerHTML = "";
+			let i = 0;
 			for (const one of products) {
-
-				if (searchBar.value !== "") {
-					if (one.title.toLowerCase().includes(searchBar.value.toLowerCase().trim())) {
-						console.log("Fouund");
-						searchUL.innerHTML += `<li class="list-group-item d-flex justify-content-between border-0"> <a href="http://localhost:3000/product/${one.title}/${one._id}" style="text-decoration:none;" class="stretched-link"> <img src="/img/product_imgs/${one.primary_img}"
+				if (i < 9) {
+					if (searchBar.value !== "") {
+						if (one.title.toLowerCase().includes(searchBar.value.toLowerCase().trim())) {
+							console.log("Fouund");
+							searchUL.innerHTML += `<li class="list-group-item d-flex justify-content-between border-0"> <a href="http://localhost:3000/product/${one.title}/${one._id}" style="text-decoration:none;" class="stretched-link"> <img src="/img/product_imgs/${one.primary_img}"
 					class="rounded mr-2" width="50px"> ${one.title} </a>
 					<div><span>$</span><span>${one.s_price}</span></div>
 				</li>`;
-
+							i++;
+						}
 					}
-				} else {
-					// searchUL.innerHTML = `<li class="list-group-item d-flex justify-content-between border-0 border-bottom-1"> No Product Found!	</li>`;
 				}
 			} // Loop ends here
 		}; //Event Listener ends here
@@ -466,6 +466,7 @@ async function pagination_fun() {
 	if (document.URL === "http://localhost:3000/shop") {
 		let all_products_api = "http://localhost:3000/get-all-products";
 		let pages_pagi_show_here = document.getElementById("pages_pagi_show_here");
+		let alertBar = document.getElementById("alertBar");
 
 
 		const pro_res = await fetch(all_products_api);
@@ -476,7 +477,7 @@ async function pagination_fun() {
 		let pages_pagination_list = "";
 
 
-		// Show pagination dynamically
+		// Show pagination list/pages number dynamically
 		for (let i = 0; i < num_of_pages; i++) {
 			pages_pagination_list += `<li class="page-item ${i < 1 ? 'active' : ''}">
 		<a class="page-link" href="http://localhost:3000/shop">${i + 1}</a>
@@ -486,21 +487,23 @@ async function pagination_fun() {
 	<span aria-hidden="true">&laquo;</span>
 	<span class="sr-only">Previous</span></a> </li>
 
-${pages_pagination_list}
+	${pages_pagination_list}
 
 <li> <a class="page-link" aria-label="Next" id="next_pagination">
 <span aria-hidden="true">&raquo;</span>
 <span class="sr-only">Next</span></a> </li>`;
-		// End Here - Show pagination dynamically
+		// End Here - Show pagination list/pages number dynamically
 
 
-		// Show Products
+		// Show initial Products without pagination
 		let show_products_here = document.getElementById("show_products_here");
 		let n1 = 0;
 		// let n2 = 1;
 		let url = `http://localhost:3000/shop/next-page/${n1++}`;
 		const res = await fetch(url);
 		const data = await res.json();
+
+		console.log(data.length);
 
 		for (let one of data) {
 			show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
@@ -538,21 +541,44 @@ ${pages_pagination_list}
 		}
 		add_to_fav_fun();
 		add_to_cart_fun();
+		// End-Here Show initial products without pagination
+
+
 
 		// EventListeners on next and previous buttons
 		let pre_pagination = document.getElementById("pre_pagination");
 		let next_pagination = document.getElementById("next_pagination");
 
 
-		// Next Button of Pagination 
-		next_pagination.addEventListener("click", async () => {
+		// Next arrow Button of Pagination 
+		let last_page_data_limit = 0;
+		let next_i = 1;
+
+		async function next_pagination_event_fun(e) {
 			let url = `http://localhost:3000/shop/next-page/${n1++}`;
 			const res = await fetch(url);
 			const data = await res.json();
-			show_products_here.innerHTML = "";
 
-			for (let one of data) {
-				show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+			if (next_i < num_of_pages) {
+				show_products_here.innerHTML = "";
+				if (next_i === parseInt(num_of_pages)) {
+					next_pagination.style.backgroundColor = "#EDF1FF";
+					last_page_data_limit = data.length;
+				}
+			}
+
+
+			console.log(data.length);
+			console.log("next ", next_i);
+			// next_i++;
+
+
+			if (next_i++ < num_of_pages) {
+				for (let one of data) {
+					// next_i++;
+
+					// for (let i = 0; i < data.length; i++) {
+					show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
 			<div class="card product-item border-0 mb-4">
 				<div
 					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
@@ -585,22 +611,26 @@ ${pages_pagination_list}
 		</div>
 	`;
 
+				}
 			}
+
 			add_to_fav_fun();
 			add_to_cart_fun();
-		});
+		}
+		next_pagination.addEventListener("click", next_pagination_event_fun);
 
 
 		// Previous Button of pagination
 		let p1 = 0;
 		pre_pagination.addEventListener("click", async () => {
-			let url = `http://localhost:3000/shop/pre-page/${p1++}`;
+			let url = `http://localhost:3000/shop/pre-page/${p1++}/${last_page_data_limit}`;
 
 			const res = await fetch(url);
 			const data = await res.json();
 			show_products_here.innerHTML = "";
+			const new_data = data.slice(2, 14);
 
-			for (let one of data) {
+			for (let one of new_data) {
 				show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
 			<div class="card product-item border-0 mb-4">
 				<div
@@ -646,7 +676,7 @@ pagination_fun();
 
 
 
-// Purchase product
+// Buy products
 async function pay_now() {
 	if (document.URL === "http://localhost:3000/cart") {
 		const priceInPopUP = document.getElementsByClassName("priceInPopUP");
@@ -746,10 +776,3 @@ async function pay_now() {
 	}
 }
 pay_now();
-
-
-
-
-
-
-
