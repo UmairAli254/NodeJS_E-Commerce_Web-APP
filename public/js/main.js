@@ -620,7 +620,7 @@ async function pagination_fun() {
 		next_pagination.addEventListener("click", next_pagination_event_fun);
 
 
-		// Previous Button of pagination
+		// Previous Button of pagination 
 		let p1 = 0;
 		pre_pagination.addEventListener("click", async () => {
 			let url = `http://localhost:3000/shop/pre-page/${p1++}/${last_page_data_limit}`;
