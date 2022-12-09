@@ -556,6 +556,7 @@ async function pagination_fun() {
 				}
 			});
 
+			document.location = "#show_products_container";
 		}
 
 		show_products_fun(page);
@@ -572,23 +573,13 @@ async function pagination_fun() {
 		});
 
 
+		// When click on the particulart pagination button
 		Array.from(pagi_btns).forEach(ele => {
 			ele.addEventListener("click", (e) => {
-
 				page = parseInt(e.target.innerText);
-				console.log(page);
-						show_products_fun(page);
-			
+				show_products_fun(page);
 			})
 		});
-
-
-
-
-
-
-
-
 
 	}
 }
