@@ -435,8 +435,8 @@ function live_search_engine_fun() {
 		const showResults = () => {
 			searchUL.innerHTML = "";
 			let i = 0;
-			for (const one of products) {
-				if (i < 9) {
+			for (const one of products.sort()) {
+				if (i < 10) {
 					if (searchBar.value !== "") {
 						if (one.title.toLowerCase().includes(searchBar.value.toLowerCase().trim())) {
 							console.log("Fouund");
@@ -467,46 +467,38 @@ async function pagination_fun() {
 		let all_products_api = "http://localhost:3000/get-all-products";
 		let pages_pagi_show_here = document.getElementById("pages_pagi_show_here");
 		let alertBar = document.getElementById("alertBar");
-
-
-		const pro_res = await fetch(all_products_api);
-		const all_products = await pro_res.json();
-		// console.log(data);
-
-		let num_of_pages = all_products.length / 12;
-		let pages_pagination_list = "";
+		let pre_pagination = document.getElementById("pre_pagination");
+		let next_pagination = document.getElementById("next_pagination");
+		let show_products_here = document.getElementById("show_products_here");
 
 
 		// Show pagination list/pages number dynamically
-		for (let i = 0; i < num_of_pages; i++) {
-			pages_pagination_list += `<li class="page-item ${i < 1 ? 'active' : ''}">
-		<a class="page-link" href="http://localhost:3000/shop">${i + 1}</a>
-		</li>`;
+
+		const pro_res = await fetch(all_products_api);
+		const all_products = await pro_res.json();
+		let num_of_pages = Math.ceil(all_products.length / 12);
+
+		for (let i = 1; i <= num_of_pages; i++) {
+			pages_pagi_show_here.innerHTML += `
+			<li class="page-item page-link pagi-buttons">${i}</li>
+			`;
 		}
-		pages_pagi_show_here.innerHTML = `<li><a class="page-link" aria-label="Previous" id="pre_pagination">
-	<span aria-hidden="true">&laquo;</span>
-	<span class="sr-only">Previous</span></a> </li>
-
-	${pages_pagination_list}
-
-<li> <a class="page-link" aria-label="Next" id="next_pagination">
-<span aria-hidden="true">&raquo;</span>
-<span class="sr-only">Next</span></a> </li>`;
 		// End Here - Show pagination list/pages number dynamically
 
 
-		// Show initial Products without pagination
-		let show_products_here = document.getElementById("show_products_here");
-		let n1 = 0;
-		// let n2 = 1;
-		let url = `http://localhost:3000/shop/next-page/${n1++}`;
-		const res = await fetch(url);
-		const data = await res.json();
 
-		console.log(data.length);
+		let page = 1;
+		const pagi_btns = document.getElementsByClassName("pagi-buttons");
 
-		for (let one of data) {
-			show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+		async function show_products_fun(page) {
+			let url = `http://localhost:3000/shop/next-page/${page}`;
+			const res = await fetch(url);
+			const data = await res.json();
+
+			show_products_here.innerHTML = "";
+
+			for (let one of data) {
+				show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
 		<div class="card product-item border-0 mb-4">
 			<div
 				class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
@@ -538,136 +530,64 @@ async function pagination_fun() {
 		</div>
 	</div>
 `;
-		}
-		add_to_fav_fun();
-		add_to_cart_fun();
-		// End-Here Show initial products without pagination
-
-
-
-		// EventListeners on next and previous buttons
-		let pre_pagination = document.getElementById("pre_pagination");
-		let next_pagination = document.getElementById("next_pagination");
-
-
-		// Next arrow Button of Pagination 
-		let last_page_data_limit = 0;
-		let next_i = 1;
-
-		async function next_pagination_event_fun(e) {
-			let url = `http://localhost:3000/shop/next-page/${n1++}`;
-			const res = await fetch(url);
-			const data = await res.json();
-
-			if (next_i < num_of_pages) {
-				show_products_here.innerHTML = "";
-				if (next_i === parseInt(num_of_pages)) {
-					next_pagination.style.backgroundColor = "#EDF1FF";
-					last_page_data_limit = data.length;
-				}
-			}
-
-
-			console.log(data.length);
-			console.log("next ", next_i);
-			// next_i++;
-
-
-			if (next_i++ < num_of_pages) {
-				for (let one of data) {
-					// next_i++;
-
-					// for (let i = 0; i < data.length; i++) {
-					show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-			<div class="card product-item border-0 mb-4">
-				<div
-					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-					<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
-						alt="${one.title}">
-				</div>
-				<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-					<h6 class="text-truncate mb-3">
-					${one.title}
-					</h6>
-					<div class="d-flex justify-content-center">
-						<h6>$${one.s_price}
-						</h6>
-						<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
-					</div>
-				</div>
-				<div class="card-footer d-flex justify-content-between bg-light border">
-					<a href="http://localhost:3000/product/${one.title}/${one._id}"
-						class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
-						Detail</a>
-	
-					<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
-						<i class="fas fa-heart text-primary mr-1"></i>Fav
-					</a>
-	
-					<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
-							class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-				</div>
-			</div>
-		</div>
-	`;
-
-				}
-			}
-
-			add_to_fav_fun();
-			add_to_cart_fun();
-		}
-		next_pagination.addEventListener("click", next_pagination_event_fun);
-
-
-		// Previous Button of pagination 
-		let p1 = 0;
-		pre_pagination.addEventListener("click", async () => {
-			let url = `http://localhost:3000/shop/pre-page/${p1++}/${last_page_data_limit}`;
-
-			const res = await fetch(url);
-			const data = await res.json();
-			show_products_here.innerHTML = "";
-			const new_data = data.slice(2, 14);
-
-			for (let one of new_data) {
-				show_products_here.innerHTML += `<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-			<div class="card product-item border-0 mb-4">
-				<div
-					class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-					<img class="img-fluid w-100" src="/img/product_imgs/${one.primary_img}"
-						alt="${one.title}">
-				</div>
-				<div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-					<h6 class="text-truncate mb-3">
-					${one.title}
-					</h6>
-					<div class="d-flex justify-content-center">
-						<h6>$${one.s_price}
-						</h6>
-						<h6 class="text-muted ml-2"><del>$${one.price}</del></h6>
-					</div>
-				</div>
-				<div class="card-footer d-flex justify-content-between bg-light border">
-					<a href="http://localhost:3000/product/${one.title}/${one._id}"
-						class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
-						Detail</a>
-	
-					<a class="btn btn-md text-dark p-0 add_to_favourite" id="${one._id}">
-						<i class="fas fa-heart text-primary mr-1"></i>Fav
-					</a>
-	
-					<a class="btn btn-sm text-dark p-0 add_to_cart" id="${one._id}"><i
-							class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-				</div>
-			</div>
-		</div>
-	`;
-
 			}
 			add_to_fav_fun();
 			add_to_cart_fun();
+
+			// Remove last and first pagination button accordingly
+			if (page < num_of_pages) {
+				next_pagination.style.visibility = "visible";
+			} else {
+				next_pagination.style.visibility = "hidden";
+			}
+
+			if (page === 1) {
+				pre_pagination.style.visibility = "hidden";
+			} else {
+				pre_pagination.style.visibility = "visible";
+			}
+
+			// Change the color of pagination buttons accordingly
+			Array.from(pagi_btns).forEach(ele => {
+				if (parseInt(ele.innerText) === page) {
+					ele.classList.add("active");
+				} else {
+					ele.classList.remove("active");
+				}
+			});
+
+		}
+
+		show_products_fun(page);
+
+
+		next_pagination.addEventListener("click", function () {
+			page++;
+			show_products_fun(page);
 		});
+
+		pre_pagination.addEventListener("click", function () {
+			page--;
+			show_products_fun(page);
+		});
+
+
+		Array.from(pagi_btns).forEach(ele => {
+			ele.addEventListener("click", (e) => {
+
+				page = parseInt(e.target.innerText);
+				console.log(page);
+						show_products_fun(page);
+			
+			})
+		});
+
+
+
+
+
+
+
 
 
 	}
@@ -676,7 +596,7 @@ pagination_fun();
 
 
 
-// Buy products
+// Buy products complete procedure
 async function pay_now() {
 	if (document.URL === "http://localhost:3000/cart") {
 		const priceInPopUP = document.getElementsByClassName("priceInPopUP");

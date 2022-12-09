@@ -88,10 +88,21 @@ body {
 
 /* / Search bar css */
 
+
 /* User profile */
 .user-profile-pages-list:hover a {
   text-decoration: none;
 }
+
+/* shop page */
+.pagination .active{
+  background-color: var(--primary);
+  color: white
+}
+.pagi-buttons{
+  cursor: pointer;
+}
+
 
 /* .purchased_individual:hover {
   background-color: var(--primary);

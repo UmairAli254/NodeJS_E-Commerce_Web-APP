@@ -272,22 +272,22 @@ app.get("/logout", (req, res) => {
 });
 
 // End User Account
-app.get("/checkout", async (req, res) => {
-    try {
-        const all_categories = await CMr.find({}, { category_name: true });
-        const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
+// app.get("/checkout", async (req, res) => {
+//     try {
+//         const all_categories = await CMr.find({}, { category_name: true });
+//         const isVerified = jwt.verify(req.cookies.eShopperLoginToken, process.env.SECRET_KEY);
 
-        const data = await cart_pro_Mr.find({ user_email: isVerified });
+//         const data = await cart_pro_Mr.find({ user_email: isVerified });
 
-        res.render("checkout", {
-            categories: all_categories,
-            products: data
-        });
+//         res.render("checkout", {
+//             categories: all_categories,
+//             products: data
+//         });
 
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});
+//     } catch (err) {
+//         res.status(500).send(err);
+//     }
+// });
 
 // Cart Page and Add to cart process below
 // Cart Page
@@ -482,12 +482,12 @@ app.get("/search/:name?", async (req, res) => {
 });
 
 
+
+
 // Paginaion
-// Next
 app.get("/shop/next-page/:skip", async (req, res) => {
     try {
-        let skip = req.params.skip * 12;
-        // let limit = req.params.limit * 12;
+        let skip = (req.params.skip - 1) * 12;
         const data = await prod_Mr.find().skip(skip).limit(12);
 
         // console.log(data);
@@ -499,24 +499,6 @@ app.get("/shop/next-page/:skip", async (req, res) => {
 
 });
 
-// Previous
-app.get("/shop/pre-page/:skip/:last_page_data", async (req, res) => {
-    try {
-        let skip = req.params.skip * 12;
-        // let limit = req.params.limit * 12;
-        let previous_last_page_data = req.params.last_page_data;
-        let limit = 12 + parseInt(previous_last_page_data);
-        console.log(limit);
-        const data = await prod_Mr.find().skip(skip).limit(limit).sort({ _id: -1 });
-
-        // console.log(data);
-        res.status(200).send(data);
-    } catch (err) {
-        // console.log(err);
-        res.status(500).send(err);
-    }
-
-});
 
 // Pagination ends here
 
